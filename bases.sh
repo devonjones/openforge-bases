@@ -3,7 +3,7 @@
 set -e
 
 : ${OPENSCAD:="openscad"}
-: ${CONVERTSTL:="../../openforge/bin/convertSTL.rb"}
+: ${CONVERTSTL:="./convertSTL.rb"}
 #declare -a style=("plain" "stone")
 declare -a style=("plain")
 declare -a boolean=("union" "difference")
