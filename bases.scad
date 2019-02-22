@@ -19,11 +19,11 @@ magnet_hole = 6;
 
 /* [Priority] */
 // Do you want lock or magnets to win when the two conflict
-priority = "lock"; // [lock,magnets]
+priority = "magnets"; // [lock,magnets]
 
 /* [Shape] */
 // What type of tile is this for
-shape = "curved"; // [square,diagonal,curved]
+shape = "square"; // [square,diagonal,curved,alcove]
 
 /* [Curved Options] */
 // Options for curved, will be ignored if the tile type is not curved
@@ -364,6 +364,8 @@ module connector_positive(x,y,square_basis,shape,edge_width,magnet_hole,lock,pri
         }
     } else if (shape == "diagonal") {
         connector_positive_square(x,y,square_basis,edge_width,magnet_hole,lock,priority,east=false,north=false);
+    } else if (shape == "alcove") {
+        connector_positive_square(x,y,square_basis,edge_width,magnet_hole,lock,priority,west=false,east=false,north=false);
     }
 }
 
@@ -479,6 +481,8 @@ module connector_negative(x,y,square_basis,shape,edge_width,magnet_hole,lock,pri
         }
     } else if (shape == "diagonal") {
         connector_negative_square(x,y,square_basis,edge_width,magnet_hole,lock,priority,east=false,north=false);
+    } else if (shape == "alcove") {
+        connector_negative_square(x,y,square_basis,edge_width,magnet_hole,lock,priority,west=false,east=false,north=false);
     }
 }
 
@@ -597,6 +601,8 @@ module plain_base(x,y,square_basis,lock,shape,edge_width) {
         }
     } else if (shape == "diagonal") {
         plain_diagonal(x,y,square_basis,lock,edge_width);
+    } else if (shape == "alcove") {
+        plain_alcove(x,y,square_basis,lock,edge_width);
     }
 }
 
@@ -867,6 +873,41 @@ module plain_diagonal(x,y,square_basis,lock,edge_width) {
     }
 }
 
+module plain_alcove(x,y,square_basis,lock,edge_width) {
+    mult = 25 / 10.2;
+    wall_width = square_basis / mult;
+    
+    module semicircle() {
+        hull() {
+            difference() {
+                translate([square_basis, 0, .4]) cylinder(5.6,x*square_basis/2+wall_width,x*square_basis/2+wall_width,$fn=200);
+                translate([-wall_width-1,-x*square_basis-wall_width,-1]) cube([x*square_basis+wall_width*2+2,x*square_basis+wall_width,8]);
+            }
+            difference() {
+                translate([square_basis, 0, 0]) cylinder(.4,x*square_basis/2+wall_width-.25,x*square_basis/2+wall_width-.25,$fn=200);
+                translate([-wall_width-1,-x*square_basis-wall_width+.25,-1]) cube([x*square_basis+wall_width*2+2,x*square_basis+wall_width,8]);
+            }
+        }
+    }
+
+    if(lock == "dragonlock") {
+        difference() {
+            semicircle();
+            dragonlock_square_negative_a(x,x, west=false, east=false, north=false, center=false);
+            dragonlock_square_negative_b(x,x, west=false, east=false, north=false);
+        }
+    } else {
+        difference() {
+            plain_square_positive(x,x/2,square_basis,edge_width);
+            translate([-1,8,-1]) cube([x*square_basis+2,x*square_basis,8]);
+            plain_square_negative(x,x/2,square_basis,edge_width);
+        }
+        difference() {
+            semicircle();
+            translate([x*square_basis/2,0,-1]) cylinder(8,x*square_basis/2-.25, x*square_basis/2-.25,$fn=200);
+        }
+    }
+}
 
 /*
  * Top Level Function
