@@ -44,6 +44,10 @@ notch_y = 2; // [1,2,3]
 // Add support for dynamic floors
 dynamic_floors = "false";  // [true,false]
 
+/* [Topless] */
+// remove top of openlock bays
+topless = "false"; // [true, false]
+
 /*
  * Dragonlock connection bay
  */
@@ -168,13 +172,14 @@ module infinitylock_negative() {
  * Openlock connection bay
  */
 module openlock_chamber(buffer=0) {
-    translate([-buffer,-7,1.4]) cube([2+buffer,7*2,4.2]);
+    add = topless == "true" ? 10 : 0;
+    translate([-buffer,-7,1.4]) cube([2+buffer,7*2,4.2+add]);
     hull() {
-        translate([0,-6,1.4]) cube([2,6*2,4.2]);
-        translate([3+0.01,-5,1.4]) cube([2,5*2,4.2]);
+        translate([0,-6,1.4]) cube([2,6*2,4.2+add]);
+        translate([3+0.01,-5,1.4]) cube([2,5*2,4.2+add]);
     }
     hull() {
-        translate([5,-5,1.4]) cube([1,5*2,4.2]);
+        translate([5,-5,1.4]) cube([1,5*2,4.2+add]);
         translate([6,-5,1.4]) cube([1,5*2,4.7]);
     }
     translate([6,-6.4,-1]) cube([4.7,6.4*2,7.1]);
@@ -192,8 +197,10 @@ module openlock_supports() {
             translate([-1.1,2.05-.2,4.0]) cube([3.1,1.4,1.1]);
         }
     }
-    support();
-    mirror([0,1,0]) support();
+    if (topless != "true") {
+        support();
+        mirror([0,1,0]) support();
+    }
 }
 
 module openlock_positive() {
