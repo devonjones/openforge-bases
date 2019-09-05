@@ -48,6 +48,14 @@ dynamic_floors = "false";  // [true,false]
 // remove top of openlock bays
 topless = "true"; // [true, false]
 
+/* [External] */
+// Set to true if you want a side to be exteral, that side will be extended by half and have connection bays removed
+
+external_north = "false"; // [true, false]
+external_south = "false"; // [true, false]
+external_east = "false"; // [true, false]
+external_west = "false"; // [true, false]
+
 /*
  * Dragonlock connection bay
  */
@@ -398,37 +406,37 @@ module connector_positive_square(x,y,square_basis,edge_width,magnet_hole,lock,pr
 
 module connector_positive_square_impl(x,y,square_basis,edge_width,magnet_hole,lock,priority,north=true,south=true,east=true,west=true) {
     for ( i = [0 : y-1] ) {
-        if(west) {
+        if(west && !ext_west) {
             translate([0,square_basis*(i+1)-square_basis/2,0]) center_connector_positive(y,i,magnet_hole,lock,priority);
         }
-        if(east) {
+        if(east && !ext_east) {
             translate([square_basis*x,square_basis*(i+1)-square_basis/2,0]) rotate([0,0,180]) center_connector_positive(y,i,magnet_hole,lock,priority);
         }
     }
     if (y > 1) {
         for ( i = [1 : y-1] ) {
-            if(west) {
+            if(west && !ext_west) {
                 translate([0,square_basis*i,0]) joint_connector_positive(y,i,magnet_hole,lock,priority);
             }
-            if(east) {
+            if(east && !ext_east) {
                 translate([square_basis*x,square_basis*i,0]) rotate([0,0,180]) joint_connector_positive(y,i,magnet_hole,lock,priority);
             }
         }
     }
     for ( i = [0 : x-1] ) {
-        if(south) {
+        if(south && !ext_south) {
             translate([square_basis*(i+1)-square_basis/2,0,0]) rotate([0,0,90]) center_connector_positive(x,i,magnet_hole,lock,priority);
         }
-        if(north) {
+        if(north && !ext_north) {
             translate([square_basis*(i+1)-square_basis/2,square_basis*y,0]) rotate([0,0,-90]) center_connector_positive(x,i,magnet_hole,lock,priority);
         }
     }
     if (x > 1) {
         for ( i = [1 : x-1] ) {
-            if(south) {
+            if(south && !ext_south) {
                 translate([square_basis*i,0,0]) rotate([0,0,90]) joint_connector_positive(y,i,magnet_hole,lock,priority);
             }
-            if(north) {
+            if(north && !ext_north) {
                 translate([square_basis*i,square_basis*y,0]) rotate([0,0,-90]) joint_connector_positive(y,i,magnet_hole,lock,priority);
             }
         }
@@ -569,37 +577,37 @@ module connector_negative_square(x,y,square_basis,edge_width,magnet_hole,lock,pr
 
 module connector_negative_square_impl(x,y,square_basis,edge_width,magnet_hole,lock,priority,north=true,south=true,east=true,west=true) {
     for ( i = [0 : y-1] ) {
-        if(west) {
+        if(west && !ext_west) {
             translate([0,square_basis*(i+1)-square_basis/2,0]) center_connector_negative(y,i,magnet_hole,lock,priority);
         }
-        if(east) {
+        if(east && !ext_east) {
             translate([square_basis*x,square_basis*(i+1)-square_basis/2,0]) rotate([0,0,180]) center_connector_negative(y,i,magnet_hole,lock,priority);
         }
     }
     if (y > 1) {
         for ( i = [1 : y-1] ) {
-            if(west) {
+            if(west && !ext_west) {
                 translate([0,square_basis*i,0]) joint_connector_negative(y,i,magnet_hole,lock,priority);
             }
-            if(east) {
+            if(east && !ext_east) {
                 translate([square_basis*x,square_basis*i,0]) rotate([0,0,180]) joint_connector_negative(y,i,magnet_hole,lock,priority);
             }
         }
     }
     for ( i = [0 : x-1] ) {
-        if(south) {
+        if(south && !ext_south) {
             translate([square_basis*(i+1)-square_basis/2,0,0]) rotate([0,0,90]) center_connector_negative(x,i,magnet_hole,lock,priority);
         }
-        if(north) {
+        if(north && !ext_north) {
             translate([square_basis*(i+1)-square_basis/2,square_basis*y,0]) rotate([0,0,-90]) center_connector_negative(x,i,magnet_hole,lock,priority);
         }
     }
     if (x > 1) {
         for ( i = [1 : x-1] ) {
-            if(south) {
+            if(south && !ext_south) {
                 translate([square_basis*i,0,0]) rotate([0,0,90]) joint_connector_negative(y,i,magnet_hole,lock,priority);
             }
-            if(north) {
+            if(north && !ext_north) {
                 translate([square_basis*i,square_basis*y,0]) rotate([0,0,-90]) joint_connector_negative(y,i,magnet_hole,lock,priority);
             }
         }
@@ -754,10 +762,15 @@ module plain_square(x,y,square_basis,lock,edge_width) {
 }
 
 module plain_square_positive(x,y,square_basis) {
+    e_north = ext_north ? square_basis/2 : 0;
+    e_south = ext_south ? square_basis/2 : 0;
+    e_east = ext_east ? square_basis/2 : 0;
+    e_west = ext_west ? square_basis/2 : 0;
+    
     difference() {
         hull() {
-            translate([0,0,0.4]) cube([square_basis*x, square_basis*y, 6-.39]);
-            translate([0.25,0.25,0]) cube([square_basis*x-.5, square_basis*y-.5, 1]);
+            translate([-e_west,-e_south,0.4]) cube([square_basis*x+e_west+e_east, square_basis*y+e_north+e_south, 6-.39]);
+            translate([0.25-e_west,0.25-e_south,0]) cube([square_basis*x-.5+e_west+e_east, square_basis*y-.5+e_north+e_south, 1]);
         }
         if(notch == "true") {
             translate([-1,-1,-1]) cube([square_basis*notch_x+1, square_basis*notch_y+1, 8]);
@@ -770,10 +783,15 @@ module plain_square_positive(x,y,square_basis) {
 }
 
 module plain_square_negative(x,y,square_basis,edge_width) {
+    e_north = ext_north ? square_basis/2 : 0;
+    e_south = ext_south ? square_basis/2 : 0;
+    e_east = ext_east ? square_basis/2 : 0;
+    e_west = ext_west ? square_basis/2 : 0;
+
     intersection() {
-        translate([edge_width,edge_width,0]) translate([1,1,-1]) cube([square_basis*x-((edge_width+1)*2),square_basis*y-((edge_width+1)*2),8]);
+        translate([edge_width-e_west,edge_width-e_south,0]) translate([1,1,-1]) cube([square_basis*x-((edge_width+1)*2)+e_west+e_east,square_basis*y-((edge_width+1)*2)+e_north+e_south,8]);
         difference() {
-            translate([edge_width,edge_width,0]) translate([1,1,-1]) cube([square_basis*x-((edge_width+1)*2),square_basis*y-((edge_width+1)*2),8]);
+            translate([edge_width-e_west,edge_width-e_south,0]) translate([1,1,-1]) cube([square_basis*x-((edge_width+1)*2)+e_west+e_east,square_basis*y-((edge_width+1)*2)+e_north+e_south,8]);
             if(notch == "true") {
                 translate([0,0,0.4]) cube([square_basis*notch_x+edge_width+1, square_basis*notch_y+edge_width+1, 6]);
                 translate([0.25,.25,0]) cube([square_basis*notch_x+edge_width+1-.5, square_basis*notch_y+edge_width+1-.5, .4]);
@@ -1238,6 +1256,11 @@ valid_dragonlock_y = (y % 2 == 0);
 valid_dragonlock_basis = (square_basis == "inch");
 
 valid_infinitylock_basis = (square_basis == "inch");
+
+ext_north = external_north == "true";
+ext_south = external_south == "true";
+ext_east = external_east == "true";
+ext_west = external_west == "true";
 
 if(lock == "dragonlock" && !valid_dragonlock_x) {
     echo("ERROR: dragonlock can only work with tiles that have squared evenly dividible by 2");
