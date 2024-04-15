@@ -46,7 +46,7 @@ dynamic_floors = "false";  // [true,false]
 
 /* [Topless] */
 // remove top of openlock bays
-topless = "true"; // [true, false]
+TOPLESS = "true"; // [true, false]
 
 /* [External] */
 // Set to true if you want a side to be exteral, that side will be extended by half and have connection bays removed
@@ -56,173 +56,13 @@ external_south = "false"; // [true, false]
 external_east = "false"; // [true, false]
 external_west = "false"; // [true, false]
 
-/*
- * Dragonlock connection bay
- */
-module dragonlock_nub() {
-    hull() {
-        translate([3.92,16.62,-1]) cube([4.85,4.85,1]);
-        translate([3.92+.74,16.62+.74,0]) cube([4.85-.74*2,4.85-.74*2,1.03]);
-    }
-    translate([3.92+.74,16.62+.74,1]) cube([4.85-.74*2,4.85-.74*2,4.21]);
-}
+include <lock_dragonlock.scad>
+include <lock_infinitylock.scad>
+include <lock_openlock.scad>
+include <lock_openlock_topless.scad>
+include <lock_magnetic.scad>
+include <lock_flex_magnetic.scad>
 
-module dragonlock_interior_a(north=true,south=true,east=true,west=true,center=true) {
-    module edge() {
-        difference() {
-            hull() {
-                translate([3.17,-12.67,-1]) cube([8.512,12.67*2,6]);
-                translate([3.145,-12.7,-1]) cube([8.512,12.67*2,6.206]);
-            }
-            translate([10.29,-12.8,5.206]) rotate([0,45,0]) cube([8.512,12.8*2,6.206]);
-        }
-    }
-    
-    translate([0,25.4,0]) {
-        if(center) {
-            difference() {
-                translate([12.7,-12.7,-1]) cube([50.8-12.7*2,50.8-12.7*2,6.206]);
-                translate([25.4,0,0]) rotate([0,0,45]) translate([-.75,-30,-2]) cube([1.5,60,20]);
-                translate([25.4,0,0]) rotate([0,0,-45]) translate([-.75,-30,-2]) cube([1.5,60,20]);
-            }
-        }
-
-        if (!west) {
-            edge();
-        }
-        if (!south) {
-            translate([25.4,-25.4,0]) rotate([0,0,90]) edge();
-        }
-        if (!east) {
-            translate([50.8,0,0]) rotate([0,0,180]) edge();
-        }
-        if (!north) {
-            translate([25.4,25.4,0]) rotate([0,0,270]) edge();
-        }
-        dragonlock_nub();
-        translate([25.4,-25.4,0]) rotate([0,0,90]) dragonlock_nub();
-        translate([50.8,0,0]) rotate([0,0,180]) dragonlock_nub();
-        translate([25.4,25.4,0]) rotate([0,0,270]) dragonlock_nub();
-    }
-}
-
-module dragonlock_interior_b(north=true,south=true,east=true,west=true) {
-    translate([0,25.4,0]) {
-        if (west) {
-            dragonlock_negative();
-        }
-        if (south) {
-            translate([25.4,-25.4,0]) rotate([0,0,90]) dragonlock_negative();
-        }
-        if (east) {
-            translate([50.8,0,0]) rotate([0,0,180]) dragonlock_negative();
-        }
-        if (north) {
-            translate([25.4,25.4,0]) rotate([0,0,270]) dragonlock_negative();
-        }
-    }
-}
-
-
-module dragonlock_positive() {
-    translate([0,-7.8418,0.4]) cube([2,7.8418*2,5.6]);
-    //translate([3.92-1,16.62-1,0.4]) cube([6.85,6.85,5.6]);
-    //translate([3.92-1,-16.62-1-4.85,0.4]) cube([6.85,6.85,5.6]);
-}
-
-module dragonlock_negative(supports=true) {
-    difference() {
-        translate([-1,-6.8418,1.3695]) cube([5.1,6.8418*2,3.225]);
-        if(supports) {
-            translate([-1.1,-.32,0]) cube([4.262,.627,5]);
-        }
-    }
-    difference() {
-        hull() {
-            translate([3.17,-12.67,-1]) cube([8.512,12.67*2,6]);
-            translate([3.145,-12.7,-1]) cube([8.512,12.67*2,6.206]);
-        }
-        translate([10.29,-12.8,5.206]) rotate([0,45,0]) cube([8.512,12.8*2,6.206]);
-        translate([3,-3.9095,-1.1]) cube([10,3.9095*2,2.4695]);
-        translate([3,-4.7685,-1.1]) rotate([0,0,39.15]) cube([5,5,2.4695]);
-        mirror([0,1,0]) translate([3,-4.7685,-1.1]) rotate([0,0,39.15]) cube([5,5,2.4695]);
-        translate([7,-2.12,-1]) cube([5,2.12*2,10]);
-        translate([8.069,0,-1]) cylinder(10,2.815,2.811,$fn=50); 
-        translate([8.069,0,-1.1]) cylinder(2.4695,4.62,4.62,$fn=50);
-        //translate([11.69,3.9,-1.1]) rotate([0,0,180-12]) cube([2.1,1,1.101]);
-        //translate([11.69,-3.9,-1.1]) rotate([0,0,90+12]) cube([1,2.1,1.1]);
-    }
-}
-
-/*
- * Infinity Lock connection bay
- */
-module infinitylock_positive() {
-    translate([0,-6.6,0.4]) cube([2,6.6*2,5.6]); 
-}
-
-module infinitylock_negative() {
-    translate([-1,-5.6,1.4]) cube([2.6,5.6*2,4.2]);
-
-    hull() {
-        translate([0,-3.83,1.4]) cube([1.6,3.83*2,4.2]);
-        translate([0,-3.36,1.4]) cube([2.15,3.36*2,4.2]);
-    }
-    translate([0,-3.36,1.4]) cube([2.8,3.36*2,4.2]);
-    hull() {
-        translate([2.7,-3.36,1.4]) cube([2.7,3.36*2,4.2]);
-        translate([3.84,-3.83,1.4]) cube([1,3.83*2,4.2]);
-    }
-    translate([4.8,-3.83,-1]) cube([3.44,3.83*2,6.6]);
-}
-
-/*
- * Openlock connection bay
- */
-module openlock_chamber(buffer=0) {
-    add = topless == "true" ? 10 : 0;
-    translate([-buffer,-7,1.4]) cube([2+buffer,7*2,4.2+add]);
-    hull() {
-        translate([0,-6,1.4]) cube([2,6*2,4.2+add]);
-        translate([3+0.01,-5,1.4]) cube([2,5*2,4.2+add]);
-    }
-    hull() {
-        translate([5,-5,1.4]) cube([1,5*2,4.2+add]);
-        translate([6,-5,1.4]) cube([1,5*2,4.7]);
-    }
-    translate([6,-6.4,-1]) cube([4.7,6.4*2,7.1]);
-}
-
-module openlock_supports() {
-    module support() {
-        translate([-1.1,2.05,1.2]) cube([3.1,1,4.6]);
-        hull() {
-            translate([-1.1,2.05,1.4]) cube([3.1,1,2.1]);
-            translate([-1.1,2.05-.2,1.9]) cube([3.1,1.4,1.1]);
-        }
-        hull() {
-            translate([-1.1,2.05,3.5]) cube([3.1,1,2.1]);
-            translate([-1.1,2.05-.2,4.0]) cube([3.1,1.4,1.1]);
-        }
-    }
-    if (topless != "true") {
-        support();
-        mirror([0,1,0]) support();
-    }
-}
-
-module openlock_positive() {
-    translate([0,-8,0.4]) cube([2,16,5.6]); 
-}
-
-module openlock_negative(supports=true) {
-    difference() {
-        openlock_chamber(1);
-        if(supports) {
-            openlock_supports();
-        }
-    }
-}
 
 /*
  * Magnets
@@ -270,6 +110,8 @@ module center_connector_negative(edge, ordinal, magnet_hole=5.5, lock, priority=
             openlock_negative();
         } else if (priority == "lock" && lock == "infinitylock") {
             infinitylock_negative();
+        } else if (priority == "lock" && lock == "dragonlock") {
+            dragonlock_negative(priority="magnets");
         } else {
             magnet_negative(magnet_hole);
         }
@@ -297,6 +139,8 @@ module joint_connector_negative(edge, ordinal, magnet_hole=5.5, lock, priority="
         openlock_negative();
     } else if (lock == "infinitylock") {
         infinitylock_negative();
+    } else if (lock == "dragonlock") {
+        dragonlock_negative(priority);
     }
 }
 
@@ -513,9 +357,12 @@ module connector_positive_large_6_b(x,y,square_basis,edge_width) {
 module connector_positive_large_8_a(square_basis,edge_width,magnet_hole,lock,priority) {
     if(curvedconcave == "true") {
         difference() {
-            translate([0,square_basis*6,0]) connector_positive_square(4,2,square_basis,edge_width,magnet_hole,lock,priority,west=false,south=false);
-            translate([0,square_basis*6,0]) translate([square_basis*4,square_basis*(1)-square_basis/2,0]) rotate([0,0,180]) center_connector_positive(y,x,magnet_hole,lock,priority);
-            translate([0,0,-2]) cylinder(10,x*square_basis-(10.2*square_basis/25)+edge_width+1,x*square_basis-(10.2*square_basis/25)+edge_width+1,$fn=200);
+            if(magnet_hole == 0 && lock == "dragonlock") {
+            } else {
+                translate([0,square_basis*6,0]) connector_positive_square(4,2,square_basis,edge_width,magnet_hole,lock,priority,west=false,south=false);
+                translate([0,square_basis*6,0]) translate([square_basis*4,square_basis*(1)-square_basis/2,0]) rotate([0,0,180]) center_connector_positive(y,x,magnet_hole,lock,priority);
+                translate([0,0,-2]) cylinder(10,x*square_basis-(10.2*square_basis/25)+edge_width+1,x*square_basis-(10.2*square_basis/25)+edge_width+1,$fn=200);
+            }
         }
     } else {
         translate([0,square_basis*6,0]) connector_positive_square(4,2,square_basis,edge_width,magnet_hole,lock,priority,east=false,north=false);
@@ -550,10 +397,19 @@ module connector_negative(x,y,square_basis,shape,edge_width,magnet_hole,lock,pri
         } else if (x > 4 || y > 4) {
             echo("Curved does not support ", x, "x", y);
         } else {
-            connector_negative_square(x,y,square_basis,edge_width,magnet_hole,lock,priority,east=false,north=false);
+            difference() {
+                connector_negative_square(x,y,square_basis,edge_width,magnet_hole,lock,priority,east=false,north=false);
+                if(curvedconcave == "true") {
+                        translate([x*square_basis,y*square_basis,-1]) scale([((x*square_basis)-edge_width-2)/square_basis,((y*square_basis)-edge_width-2)/square_basis,1]) cylinder(8,square_basis,square_basis,$fn=200);
+                }
+            }
         }
     } else if (shape == "diagonal") {
-        connector_negative_square(x,y,square_basis,edge_width,magnet_hole,lock,priority,east=false,north=false);
+        hyp = sqrt(square_basis*x*square_basis*x+square_basis*y*square_basis*y);
+        difference() {
+            connector_negative_square(x,y,square_basis,edge_width,magnet_hole,lock,priority,east=false,north=false);
+            translate([x*square_basis+square_basis*.25,0,0]) rotate([0,0,atan(x/y)-90]) mirror([1,0,0]) cube([hyp* 1.5,hyp*1.5,6]);
+        }
     } else if (shape == "alcove") {
         connector_negative_square(x,y,square_basis,edge_width,magnet_hole,lock,priority,west=false,east=false,north=false);
     }
@@ -655,13 +511,11 @@ module connector_negative_curved_large_8(square_basis, edge_width) {
 }
 
 module connector_negative_large_4_a(square_basis,edge_width,magnet_hole,lock,priority) {
-    if (lock != "dragonlock" || magnet_hole > 0) {
-        intersection() {
-            translate([-2*square_basis,2*square_basis,0]) connector_negative_square(4,2,square_basis,edge_width,magnet_hole,lock,priority,north=false);
-            difference() {
-                translate([0,0,.4]) scale([x-.1,y-.1,1]) cylinder(5.7,square_basis,square_basis,$fn=200);
-                translate([-x*square_basis/2,(y-.65)*square_basis,-1]) cube([x*square_basis,y*square_basis,7]);
-            }
+    intersection() {
+        translate([-2*square_basis,2*square_basis,0]) connector_negative_square(4,2,square_basis,edge_width,magnet_hole,lock,priority,north=false);
+        difference() {
+            translate([0,0,.4]) scale([x-.1,y-.1,1]) cylinder(5.7,square_basis,square_basis,$fn=200);
+            translate([-x*square_basis/2,(y-.65)*square_basis,-1]) cube([x*square_basis,y*square_basis,7]);
         }
     }
 }
@@ -727,7 +581,7 @@ module connector_negative_large_8_b(x,y,square_basis,edge_width) {
             translate([-2,-2,-1]) cube([square_basis*6.75+2, square_basis*6.75+2, 8]);
         }
     } else {
-        if(lock == "triplex" || lock == "infinitylock") {
+        if(lock == "triplex" || lock == "infinitylock" && magnet_hole == 0) {
             translate([square_basis*8/2, square_basis*8/2,0]) connector_negative_square(2,2,square_basis,edge_width,magnet_hole,lock,priority,east=false,north=false);
             translate([square_basis*5.5, square_basis*8/2,0]) connector_negative_square(1,1,square_basis,edge_width,magnet_hole,lock,priority,east=false,west=false,north=false);
             translate([square_basis*8/2, square_basis*5.5,0]) connector_negative_square(1,1,square_basis,edge_width,magnet_hole,lock,priority,east=false,south=false,north=false);
@@ -770,10 +624,9 @@ module plain_base(x,y,square_basis,lock,shape,edge_width) {
 
 module plain_square(x,y,square_basis,lock,edge_width) {
     difference() {
-        plain_square_positive(x,y,square_basis,edge_width);
+        plain_square_positive(x,y,square_basis);
         if(lock == "dragonlock") {
-            dragonlock_square_negative_a(x,y);
-            dragonlock_square_negative_b(x,y);
+            dragonlock_square_negative(x,y,square_basis,edge_width);
         } else {
             plain_square_negative(x,y,square_basis,edge_width);
         }
@@ -819,29 +672,72 @@ module plain_square_negative(x,y,square_basis,edge_width) {
     }
 }
 
-module dragonlock_square_negative_a(x,y,north=true,south=true,east=true,west=true, center=true) {
-    for(i = [2:2:x]) {
+module dragonlock_square_negative(x,y,square_basis,edge_width,north=true,south=true,east=true,west=true,center=true) {
+    module dragonlock_interior(north=true,south=true,east=true,west=true,center=true) {
+        module edge() {
+            difference() {
+                hull() {
+                    translate([3.17,-12.67,-1]) cube([8.512,12.67*2,6]);
+                    translate([3.145,-12.7,-1]) cube([8.512,12.67*2,6.206]);
+                }
+                translate([10.29,-12.8,5.206]) rotate([0,45,0]) cube([8.512,12.8*2,6.206]);
+            }
+        }
+        
+        translate([0,25.4,0]) {
+            if(center) {
+                difference() {
+                    translate([12.7,-12.7,-1]) cube([50.8-12.7*2,50.8-12.7*2,6.206]);
+                    translate([25.4,0,0]) rotate([0,0,45]) translate([-.75,-30,-2]) cube([1.5,60,20]);
+                    translate([25.4,0,0]) rotate([0,0,-45]) translate([-.75,-30,-2]) cube([1.5,60,20]);
+                }
+            }
+
+            if (!west) {
+                edge();
+            }
+            if (!south) {
+                translate([25.4,-25.4,0]) rotate([0,0,90]) edge();
+            }
+            if (!east) {
+                translate([50.8,0,0]) rotate([0,0,180]) edge();
+            }
+            if (!north) {
+                translate([25.4,25.4,0]) rotate([0,0,270]) edge();
+            }
+        }
+    }
+
+    if (x > 1 && y > 1) {
+        dragonlock_nub(square_basis);
+        translate([square_basis*x,0,0]) rotate([0,0,90]) dragonlock_nub(square_basis);
+        translate([square_basis*x,square_basis*y,0]) rotate([0,0,180]) dragonlock_nub(square_basis);
+        translate([0,square_basis*y,0]) rotate([0,0,270]) dragonlock_nub(square_basis);
+    }
+
+    if (x > 1 && y > 1) {
+        difference() {
+            translate([square_basis/2,square_basis/2,-1]) cube([square_basis*(x-1), square_basis*(y-1),8]);
+            if(notch == "true") {
+                translate([0,0,0.4]) cube([square_basis*(notch_x+.5), square_basis*(notch_y+.5), 6]);
+                translate([0.25,.25,0]) cube([square_basis*(notch_x+.5), square_basis*(notch_y+.5), .4]);
+            }
+            translate([square_basis*notch_x,0,0]) dragonlock_nub(square_basis);
+            translate([0,square_basis*notch_y,0]) dragonlock_nub(square_basis);
+        }
+    }
+
+/*    for(i = [2:2:x]) {
         for(j = [2:2:y]) {
             north = j == y;
             south = j == 2;
             west = i == 2;
             east = i == x;
-            translate([25.4*(i-2),25.4*(j-2),0]) dragonlock_interior_a(north=north, south=south, west=west, east=east, center=center);
+            translate([25.4*(i-2),25.4*(j-2),0]) dragonlock_interior(north=north, south=south, west=west, east=east, center=center);
         }
-    }
+    }*/
 }
 
-module dragonlock_square_negative_b(x,y,north=true,south=true,east=true,west=true) {
-    for(i = [2:2:x]) {
-        for(j = [2:2:y]) {
-            northi = j == y;
-            southi = j == 2;
-            westi = i == 2;
-            easti = i == x;
-            translate([25.4*(i-2),25.4*(j-2),0]) dragonlock_interior_b(north=(north && northi), south=(south && southi), west=(west && westi), east=(east && easti));
-        }
-    }
-}
 
 module plain_curved(x,y,square_basis,lock,edge_width) {
     difference() {
@@ -854,15 +750,14 @@ module plain_curved(x,y,square_basis,lock,edge_width) {
         }
         
         if (lock == "dragonlock") {
-            intersection() {
-                dragonlock_square_negative_a(x,y);
-                union() {
-                    translate([0,0,-1]) scale([((x*square_basis)-edge_width)/square_basis,((y*square_basis)-edge_width)/square_basis,1]) cylinder(8,square_basis,square_basis,$fn=200);
-                    translate([0,square_basis*(y-1),0]) dragonlock_nub();
-                    translate([50.8,25.4,0]) rotate([0,0,180]) dragonlock_nub();
+            if (x > 1 && y > 1) {
+                intersection() {
+                    dragonlock_square_negative(x,y,square_basis,edge_width);
+                    translate([0,0,-1]) scale([x-.5,y-.5,1]) cylinder(8,square_basis,square_basis,$fn=200);
                 }
+                translate([square_basis*x,0,0]) rotate([0,0,90]) dragonlock_nub(square_basis);
+                translate([0,square_basis*y,0]) rotate([0,0,270]) dragonlock_nub(square_basis);
             }
-            dragonlock_square_negative_b(x,y,north=false,south=true,east=false,west=true);
         } else {
             intersection() {
                 plain_square_negative(x,y,square_basis,edge_width);
@@ -883,15 +778,14 @@ module plain_curved_concave(x,y,square_basis,lock,edge_width) {
         }
         
         if (lock == "dragonlock") {
-            difference() {
-                union() {
-                    dragonlock_square_negative_a(x,y);
-                    dragonlock_square_negative_b(x,y,north=false,south=true,east=false,west=true);
-                }
+            if(x > 1 && y > 1) {
                 difference() {
-                    translate([x*square_basis,y*square_basis,-1]) scale([((x*square_basis)-edge_width)/square_basis,((y*square_basis)-edge_width)/square_basis,1]) cylinder(8,square_basis,square_basis,$fn=200);
-                    translate([0,square_basis*(y-1),0]) dragonlock_nub();
-                    translate([square_basis*(x),25.4,0]) rotate([0,0,180]) dragonlock_nub();
+                    dragonlock_square_negative(x,y,square_basis,edge_width);
+                    difference() {
+                        translate([x*square_basis,y*square_basis,-1]) scale([((x*square_basis))/square_basis,((y*square_basis))/square_basis,1]) cylinder(8,square_basis,square_basis,$fn=200);
+                        translate([square_basis*x,0,0]) rotate([0,0,90]) dragonlock_nub(square_basis);
+                        translate([0,square_basis*y,0]) rotate([0,0,270]) dragonlock_nub(square_basis);
+                    }
                 }
             }
         } else {
@@ -967,11 +861,8 @@ module plain_curved_large_4_a(square_basis,edge_width) {
         }
         if (lock == "dragonlock") {
             intersection() {
-                translate([-innerx*square_basis/2,innery*square_basis,0]) {
-                    dragonlock_square_negative_a(innerx,innery,north=false);
-                    dragonlock_square_negative_b(innerx,innery,north=false);
-                }
-                translate([0,0,-1]) scale([((x-.15)*square_basis)/square_basis,((y-.15)*square_basis)/square_basis,1]) cylinder(8,square_basis,square_basis,$fn=200);
+                translate([-innerx*square_basis/2,innery*square_basis,0]) dragonlock_square_negative(innerx,innery,square_basis,edge_width);
+                translate([0,0,-1]) scale([((x*square_basis)-square_basis/2)/square_basis,((y*square_basis)-square_basis/2)/square_basis,1]) cylinder(8,square_basis,square_basis,$fn=200);
             }
         } else {
             intersection() {
@@ -996,11 +887,8 @@ module plain_curved_large_4_b(square_basis,edge_width) {
         }
         if (lock == "dragonlock") {
             intersection() {
-                translate([-4*square_basis,0,0]) {
-                    dragonlock_square_negative_a(innerx,2,north=false);
-                    dragonlock_square_negative_b(innerx,2,north=false);
-                }
-                translate([0,0,-1]) scale([((x-.15)*square_basis)/square_basis,((y-.15)*square_basis)/square_basis,1]) cylinder(8,square_basis,square_basis,$fn=200);
+                translate([-4*square_basis,0,0]) dragonlock_square_negative(innerx,innery,square_basis,edge_width);
+                translate([0,0,-1]) scale([((x*square_basis)-square_basis/2)/square_basis,((y*square_basis)-square_basis/2)/square_basis,1]) cylinder(8,square_basis,square_basis,$fn=200);
             }
         } else {
             intersection() {
@@ -1026,9 +914,11 @@ module plain_curved_large_6_a(square_basis,edge_width) {
                         translate([0,0,0.3]) cylinder(5.8,x*square_basis-(10.2*square_basis/25),x*square_basis-(10.2*square_basis/25),$fn=200);
                         translate([0,0,-0.1]) cylinder(0.5,x*square_basis-(10.2*square_basis/25)+.25,x*square_basis-(10.2*square_basis/25),$fn=200);
                     }
-                    difference() {
-                        translate([0,innery*square_basis,0]) plain_square_negative(innerx,innery,square_basis,edge_width);
-                        translate([0,0,-1]) cylinder(8,x*square_basis-(10.2*square_basis/25)+edge_width,x*square_basis-(10.2*square_basis/25)+edge_width,$fn=200);
+                    if(lock != "dragonlock") {
+                        difference() {
+                            translate([0,innery*square_basis,0]) plain_square_negative(innerx,innery,square_basis,edge_width);
+                            translate([0,0,-1]) cylinder(8,x*square_basis-(10.2*square_basis/25)+edge_width,x*square_basis-(10.2*square_basis/25)+edge_width,$fn=200);
+                        }
                     }
                 }
             }
@@ -1051,9 +941,11 @@ module plain_curved_large_6_a(square_basis,edge_width) {
                             translate([0,0,0]) scale([x-(.25/square_basis),y-(.25/square_basis),1]) cylinder(0.4,square_basis,square_basis,$fn=200);
                         }
                     }
-                    intersection() {
-                        translate([0,innery*square_basis,0]) plain_square_negative(innerx,innery,square_basis,edge_width);
-                        translate([0,0,-1]) scale([((x*square_basis)-edge_width)/square_basis,((y*square_basis)-edge_width)/square_basis,1]) cylinder(8,square_basis,square_basis,$fn=200);
+                    if(lock != "dragonlock") {
+                        intersection() {
+                            translate([0,innery*square_basis,0]) plain_square_negative(innerx,innery,square_basis,edge_width);
+                            translate([0,0,-1]) scale([((x*square_basis)-edge_width)/square_basis,((y*square_basis)-edge_width)/square_basis,1]) cylinder(8,square_basis,square_basis,$fn=200);
+                        }
                     }
                 }
                 hull() {
@@ -1083,17 +975,14 @@ module plain_curved_large_8_a(square_basis,edge_width) {
                     translate([0,6*square_basis,0]) plain_square_positive(4,2,square_basis);
                 }
                 hull() {
-                    translate([0,0,.4]) scale([x,y,1]) cylinder(5.6,square_basis,square_basis,$fn=200);
+                   #translate([0,0,.4]) scale([x,y,1]) cylinder(5.6,square_basis,square_basis,$fn=200);
                     translate([0,0,0]) scale([x-(.25/square_basis),y-(.25/square_basis),1]) cylinder(.4,square_basis,square_basis,$fn=200);
                 }
             }
             if(lock == "dragonlock") {
                 intersection() {
-                    union() {
-                        translate([0,square_basis*6,0]) dragonlock_square_negative_a(4,2);
-                        translate([0,square_basis*6,0]) dragonlock_square_negative_b(4,2);
-                    }
-                    translate([0,0,-1]) scale([((x*square_basis)-edge_width)/square_basis,((y*square_basis)-edge_width)/square_basis,1]) cylinder(8,square_basis,square_basis,$fn=200);
+                    translate([0,square_basis*6,0]) dragonlock_square_negative(4,2,square_basis,edge_width);
+                    translate([0,0,-1]) scale([((x*square_basis)-square_basis/2)/square_basis,((y*square_basis)-square_basis/2)/square_basis,1]) cylinder(8,square_basis,square_basis,$fn=200);
                 }
             } else {
                 intersection() {
@@ -1109,9 +998,16 @@ module plain_curved_large_8_a(square_basis,edge_width) {
             translate([0,6*square_basis,0]) plain_square_positive(4,2,square_basis);
             translate([0,0,0.3]) cylinder(5.8,x*square_basis-(10.2*square_basis/25),x*square_basis-(10.2*square_basis/25),$fn=200);
             translate([0,0,-0.1]) cylinder(0.5,x*square_basis-(10.2*square_basis/25)+.25,x*square_basis-(10.2*square_basis/25),$fn=200);
-            difference() {
-                translate([0,6*square_basis,0]) plain_square_negative(4,2,square_basis,edge_width);
-                translate([0,0,-2]) cylinder(10,x*square_basis-(10.2*square_basis/25)+edge_width,x*square_basis-(10.2*square_basis/25)+edge_width,$fn=200);
+            if(lock == "dragonlock") {
+                difference() {
+                    translate([0,6*square_basis,0]) dragonlock_square_negative(4,2,square_basis,edge_width);
+                    translate([0,0,-2]) cylinder(10,x*square_basis-(10.2*square_basis/25)+edge_width,x*square_basis-(10.2*square_basis/25)+edge_width,$fn=200);
+                }
+            } else {
+                difference() {
+                    translate([0,6*square_basis,0]) plain_square_negative(4,2,square_basis,edge_width);
+                    translate([0,0,-2]) cylinder(10,x*square_basis-(10.2*square_basis/25)+edge_width,x*square_basis-(10.2*square_basis/25)+edge_width,$fn=200);
+                }
             }
         }
     }
@@ -1135,9 +1031,16 @@ module plain_curved_large_b(x,y,square_basis,edge_width) {
                 translate([0,0,.3]) cylinder(5.8,x*square_basis-(10.2*square_basis/25),x*square_basis-(10.2*square_basis/25),$fn=200);
                 translate([0,0,-0.1]) cylinder(0.5,x*square_basis-(10.2*square_basis/25)+.25,x*square_basis-(10.2*square_basis/25),$fn=200);
             }
-            difference() {
-                translate([innerx*square_basis,innery*square_basis,0]) plain_square_negative(innerx,innery,square_basis,edge_width);
-                translate([0,0,-1]) cylinder(8,x*square_basis-(10.2*square_basis/25)+edge_width,x*square_basis-(10.2*square_basis/25)+edge_width,$fn=200);
+            if(lock == "dragonlock") {
+                difference() {
+                    translate([innerx*square_basis,innerx*square_basis,0]) dragonlock_square_negative(innerx,innery,square_basis,edge_width);
+                    translate([0,0,-1]) cylinder(8,x*square_basis-(10.2*square_basis/25)+square_basis/2,x*square_basis-(10.2*square_basis/25)+square_basis/2,$fn=200);
+                }
+            } else {
+                difference() {
+                    translate([innerx*square_basis,innery*square_basis,0]) plain_square_negative(innerx,innery,square_basis,edge_width);
+                    translate([0,0,-1]) cylinder(8,x*square_basis-(10.2*square_basis/25)+edge_width,x*square_basis-(10.2*square_basis/25)+edge_width,$fn=200);
+                }
             }
         }
     } else {
@@ -1151,11 +1054,8 @@ module plain_curved_large_b(x,y,square_basis,edge_width) {
             }
             if(lock == "dragonlock") {
                 intersection() {
-                    union() {
-                        translate([innerx*square_basis,innerx*square_basis,0]) dragonlock_square_negative_a(4,4);
-                        translate([innerx*square_basis,innerx*square_basis,0]) dragonlock_square_negative_b(4,4);
-                    }
-                    translate([0,0,-1]) scale([((x*square_basis)-edge_width)/square_basis,((y*square_basis)-edge_width)/square_basis,1]) cylinder(8,square_basis,square_basis,$fn=200);
+                    translate([innerx*square_basis,innerx*square_basis,0]) dragonlock_square_negative(innerx,innery,square_basis,edge_width);
+                    translate([0,0,-1]) scale([((x*square_basis)-square_basis/2)/square_basis,((y*square_basis)-square_basis/2)/square_basis,1]) cylinder(8,square_basis,square_basis,$fn=200);
                 }
             } else {
                 intersection() {
@@ -1179,8 +1079,16 @@ module plain_diagonal(x,y,square_basis,lock,edge_width) {
             }
         }
         if (lock == "dragonlock") {
-            dragonlock_square_negative_a(x,y);
-            dragonlock_square_negative_b(x,y,north=false,south=true,east=false,west=true);
+            if (x > 1 && y > 1) {
+                translate([square_basis/2,square_basis/2,-1]) cube([square_basis*(x-1), square_basis*(y-1),8]);
+                dragonlock_nub(square_basis);
+                translate([square_basis*x,0,0]) rotate([0,0,90]) dragonlock_nub(square_basis);
+                difference() {
+                    translate([0,square_basis*y,0]) rotate([0,0,270]) dragonlock_nub(square_basis);
+                    translate([x*square_basis+square_basis*.2,0,0]) rotate([0,0,atan(x/y)-90]) mirror([1,0,0]) cube([hyp* 1.5,hyp*1.5,6]);
+                }
+                    
+            }
         } else {
             plain_square_negative(x,y,square_basis,edge_width);
         }
@@ -1198,10 +1106,15 @@ module plain_diagonal(x,y,square_basis,lock,edge_width) {
                 translate([0,0,0.4]) cube([square_basis*x, square_basis*y, 5.6]);
                 translate([0.25,0.25,0]) cube([square_basis*x-.5, square_basis*y-.5, .4]);
             }
-            if(lock == "dragonlock") {
-                dragonlock_square_negative_b(x,y,north=false,east=false);
-                translate([0,square_basis*(y-1),0]) dragonlock_nub();
-                translate([50.8,25.4,0]) rotate([0,0,180]) dragonlock_nub();
+            if(lock == "dragonlock" && x > 1 && y > 1) {
+                difference() {
+                    translate([0,square_basis*(y-1),0]) dragonlock_nub();
+                    translate([x*square_basis+square_basis*.2,0,0]) rotate([0,0,atan(x/y)-90]) mirror([1,0,0]) cube([hyp* 1.5,hyp*1.5,6]);
+                }
+                difference() {
+                    translate([square_basis*x,square_basis,0]) rotate([0,0,180]) dragonlock_nub();
+                    translate([0,y*square_basis+square_basis*.2,0]) rotate([0,0,atan(x/y)+180]) mirror([1,0,0]) cube([hyp* 1.5,hyp*1.5,6]);
+                }
             }
         }
     }
@@ -1227,8 +1140,10 @@ module plain_alcove(x,y,square_basis,lock,edge_width) {
     if(lock == "dragonlock") {
         difference() {
             semicircle();
-            dragonlock_square_negative_a(x,x, west=false, east=false, north=false, center=false);
-            dragonlock_square_negative_b(x,x, west=false, east=false, north=false);
+            difference() {
+                translate([x*square_basis/2,0,-1]) cylinder(8,x*square_basis/2-.25, x*square_basis/2-.25,$fn=200);
+                translate([0,0,-1]) cube([x*square_basis,square_basis/2,8]);
+            }
         }
     } else {
         difference() {
@@ -1289,13 +1204,7 @@ ext_south = external_south == "true";
 ext_east = external_east == "true";
 ext_west = external_west == "true";
 
-if(lock == "dragonlock" && !valid_dragonlock_x) {
-    echo("ERROR: dragonlock can only work with tiles that have squared evenly dividible by 2");
-} else if (lock == "dragonlock" && !valid_dragonlock_y) {
-    echo("ERROR: dragonlock can only work with tiles that have squared evenly dividible by 2");
-} else if (lock == "dragonlock" && !valid_dragonlock_basis) {
-    echo("ERROR: dragonlock is only compatible with inch basis");
-} else if (lock == "infinitylock" && !valid_infinitylock_basis) {
+if(lock == "infinitylock" && !valid_infinitylock_basis) {
     echo("ERROR: infinitylock is only compatible with inch basis");
 } else {
     color("Grey") base(x,y,square_basis_number,shape=shape,magnet_hole=magnet_hole,lock=lock,priority=priority,dynamic_floors=dynamic_floors);

@@ -65,13 +65,10 @@ module connector_negative_curved(x,y,square_basis,edge_width) {
         echo("Curved does not support ", x, "x", y);
     } else {
         connector_negative_square_notch(x,y,square_basis,edge_width,east=false,north=false);
-        if (x == y && x == 1 && CURVED_CONCAVE != "true") {
-            if(PRIORITY == "lock")
+        if (x > 1 && y > 1 && x == y) {
             rotate([0,0,45]) translate([square_basis*x,0,0]) rotate([0,0,180]) connector_negative(square_basis, PRIORITY, LOCK, MAGNETS, MAGNET_HOLE, right=false, left=false);
-        } else if (x == y && x > 1 && CURVED_CONCAVE != "true") {
             rotate([0,0,45/2]) translate([square_basis*x,0,0]) rotate([0,0,180]) connector_negative(square_basis, PRIORITY, LOCK, MAGNETS, MAGNET_HOLE, right=false, left=false);
-            rotate([0,0,45]) translate([square_basis*x,0,0]) rotate([0,0,180]) connector_negative(square_basis, PRIORITY, LOCK, MAGNETS, MAGNET_HOLE, right=false, left=false);
-            rotate([0,0,45/2*3]) translate([square_basis*x,0,0]) rotate([0,0,180]) connector_negative(square_basis, PRIORITY, LOCK, MAGNETS, MAGNET_HOLE, right=false, left=false);
+            rotate([0,0,45*1.5]) translate([square_basis*x,0,0]) rotate([0,0,180]) connector_negative(square_basis, PRIORITY, LOCK, MAGNETS, MAGNET_HOLE, right=false, left=false);
         }
     }
 }
@@ -133,11 +130,7 @@ module plain_base_curved(x,y,square_basis,edge_width) {
     } else if (x > 4 || y > 4) {
         echo("Curved does not support ", x, "x", y);
     } else {
-        if (CURVED_CONCAVE == "true") {
-            plain_curved_concave(x,y,square_basis,edge_width);
-        } else {
-            plain_curved(x,y,square_basis,edge_width);
-        }
+        plain_curved(x,y,square_basis,edge_width);
     }
 }
 
@@ -158,22 +151,6 @@ module plain_curved(x,y,square_basis,edge_width) {
     }
 }
 
-module plain_curved_concave(x,y,square_basis,edge_width) {
-    difference() {
-        difference() {
-            plain_square_positive(x,y,square_basis);
-            hull() {
-                translate([x*square_basis,y*square_basis,0.4]) scale([x-wall_width/square_basis,y-wall_width/square_basis,1]) cylinder(5.62,square_basis,square_basis,$fn=200);
-                translate([x*square_basis,y*square_basis,-0.01]) scale([(x-.25/square_basis)-wall_width/square_basis,(y-0.25/square_basis)-wall_width/square_basis,1]) cylinder(.4,square_basis,square_basis,$fn=200);
-            }
-        }
-        
-        difference() {
-            plain_square_negative(x,y,square_basis,edge_width);
-            translate([x*square_basis,y*square_basis,-1]) scale([x,y,1]) cylinder(8,square_basis,square_basis,$fn=200);
-        }
-    }
-}
 
 module plain_curved_large_6(square_basis, edge_width) {
     if(CURVED_LARGE == "a") {

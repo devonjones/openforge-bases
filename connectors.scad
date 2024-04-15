@@ -8,52 +8,52 @@ include <lock_flex_magnetic.scad>
 /*
  * Connector Layout
  */
-module center_connector_positive(edge, priority, lock, magnets, magnet_hole) {
+module center_connector_positive(edge, priority, lock, magnets, magnet_hole, height=6, topless=TOPLESS) {
     if (edge == 1) {
-        if (priority == "lock" && (lock == "openlock" || lock == "triplex")) {
+        if (priority == "lock" && (lock == "openlock_topless" || (lock == "openlock" && topless == "true"))) {
+            openlock_topless_positive(height=height);
+        } else if (priority == "lock" && (lock == "openlock" || lock == "triplex")) {
             openlock_positive();
-        } else if (priority == "lock" && lock == "openlock_topless") {
-            openlock_topless_positive();
-        } else if (PRIORITY == "lock" && lock == "infinitylock") {
+        } else if (priority == "lock" && lock == "infinitylock") {
             infinitylock_positive();
-        } else if (PRIORITY == "lock" && lock == "dragonlock") {
+        } else if (priority == "lock" && lock == "dragonlock") {
             dragonlock_positive();
-        } else if (PRIORITY == "lock" && lock == "dragonlocktriplex") {
+        } else if (priority == "lock" && lock == "dragonlocktriplex") {
             dragonlock_positive();
         } else {
             if (magnets == "magnetic") {
-                magnetic_positive(magnet_hole);
+                magnetic_positive(magnet_hole, height=height);
             } else if (magnets == "flex_magnetic") {
-                flex_magnetic_positive(magnet_hole);
+                flex_magnetic_positive(magnet_hole, height=height);
             }
         }
     } else {
-        if (priority == "lock" && lock == "triplex") {
+        if (priority == "lock" && (lock == "openlock_topless" || (lock == "openlock" && topless == "true")) && magnets == "none") {
+            openlock_topless_positive(height=height);
+        } else if (priority == "lock" && lock == "triplex") {
             openlock_positive();
         } else if (priority == "lock" && lock == "openlock" && magnets == "none") {
             openlock_positive();
-        } else if (priority == "lock" && lock == "openlock_topless" && magnets == "none") {
-            openlock_topless_positive();
         } else if (priority == "lock" && lock == "infinitylock" && magnets == "none") {
             infinitylock_positive();
         } else if (priority == "lock" && lock == "dragonlocktriplex" && magnets == "none") {
             dragonlock_positive();
         } else {
             if (magnets == "magnetic") {
-                magnetic_positive(magnet_hole);
+                magnetic_positive(magnet_hole, height=height);
             } else if (magnets == "flex_magnetic") {
-                flex_magnetic_positive(magnet_hole);
+                flex_magnetic_positive(magnet_hole, height=height);
             }
         }
     }
 }
 
-module center_connector_negative(edge, priority, lock, magnets, magnet_hole) {
+module center_connector_negative(edge, priority, lock, magnets, magnet_hole, height=6, topless=TOPLESS) {
     if (edge == 1) {
-        if (priority == "lock" && (lock == "openlock" || lock == "triplex")) {
+        if (priority == "lock" && (lock == "openlock_topless" || (lock == "openlock" && topless == "true"))) {
+            openlock_topless_negative(height=height);
+        } else if (priority == "lock" && (lock == "openlock" || lock == "triplex")) {
             openlock_negative();
-        } else if (priority == "lock" && lock == "openlock_topless") {
-            openlock_topless_negative();
         } else if (priority == "lock" && lock == "infinitylock") {
             infinitylock_negative();
         } else if (priority == "lock" && lock == "dragonlock") {
@@ -62,127 +62,127 @@ module center_connector_negative(edge, priority, lock, magnets, magnet_hole) {
             dragonlock_negative();
         } else {
             if (magnets == "magnetic") {
-                magnetic_negative(magnet_hole);
+                magnetic_negative(magnet_hole, height=height);
             } else if (magnets == "flex_magnetic") {
-                flex_magnetic_negative(magnet_hole);
+                flex_magnetic_negative(magnet_hole,height=height);
             }
         }
     } else {
-        if (priority == "lock" && lock == "triplex") {
+        if (priority == "lock" && (lock == "openlock_topless" || (lock == "openlock" && topless == "true")) && magnets == "none") {
+            openlock_topless_negative(height=height);
+        } else if (priority == "lock" && lock == "triplex") {
             openlock_negative();
         } else if (priority == "lock" && lock == "openlock" && magnets == "none") {
             openlock_negative();
-        } else if (priority == "lock" && lock == "openlock_topless" && magnets == "none") {
-            openlock_topless_negative();
         } else if (priority == "lock" && lock == "infinitylock" && magnets == "none") {
             infinitylock_negative();
         } else if (priority == "lock" && lock == "dragonlocktriplex" && magnets == "none") {
             dragonlock_negative();
         } else {
             if (magnets == "magnetic") {
-                magnetic_negative(magnet_hole);
+                magnetic_negative(magnet_hole, height=height);
             } else if (magnets == "flex_magnetic") {
-                flex_magnetic_negative(magnet_hole);
+                flex_magnetic_negative(magnet_hole, height=height);
             }
         }
     }
 }
 
-module joint_connector_positive(edge) {
-    if(LOCK == "openlock" || LOCK == "triplex") {
+module joint_connector_positive(edge, height=6, lock=LOCK, topless=TOPLESS) {
+    if (lock == "openlock_topless" || (lock == "openlock" && topless == "true")) {
+        openlock_topless_positive(height=height);
+    } else if(lock == "openlock" || lock == "triplex") {
         openlock_positive();
-    } else if (LOCK == "openlock_topless") {
-        openlock_topless_positive();
-    } else if (LOCK == "infinitylock") {
+    } else if (lock == "infinitylock") {
         infinitylock_positive();
-    } else if (LOCK == "dragonlock" || LOCK == "dragonlocktriplex") {
+    } else if (lock == "dragonlock" || lock == "dragonlocktriplex") {
         dragonlock_positive();
     }
 }
 
-module joint_connector_negative(edge) {
-    if(LOCK == "openlock" || LOCK == "triplex") {
+module joint_connector_negative(edge, height=6, lock=LOCK, topless=TOPLESS) {
+    if (lock == "openlock_topless" || (lock == "openlock" && topless == "true")) {
+        openlock_topless_negative(height=height);
+    } else if(lock == "openlock" || lock == "triplex") {
         openlock_negative();
-    } else if (LOCK == "openlock_topless") {
-        openlock_topless_negative();
-    } else if (LOCK == "infinitylock") {
+    } else if (lock == "infinitylock") {
         infinitylock_negative();
-    } else if (LOCK == "dragonlock" || LOCK == "dragonlocktriplex") {
+    } else if (lock == "dragonlock" || lock == "dragonlocktriplex") {
         dragonlock_negative();
     }
 }
 
-module connector_positive(square_basis, priority, lock, magnets, magnet_hole, right=true, center=true, left=true) {
+module connector_positive(square_basis, priority, lock, magnets, magnet_hole, height=6, right=true, center=true, left=true) {
     if (left) {
-        translate([0,square_basis*(.5),0]) center_connector_positive(0, priority, lock, magnets, magnet_hole);
+        translate([0,square_basis*(.5),0]) center_connector_positive(0, priority, lock, magnets, magnet_hole, height=height);
     }
     if (center) {
-        translate([0,square_basis*(-.5),0]) center_connector_positive(0, priority, lock, magnets, magnet_hole);
+        translate([0,square_basis*(-.5),0]) center_connector_positive(0, priority, lock, magnets, magnet_hole, height=height);
     }
     if(right) {
-        translate([0,0,0]) joint_connector_positive(0);
+        translate([0,0,0]) joint_connector_positive(0, height=height);
     }
 }
 
-module connector_negative(square_basis, priority, lock, magnets, magnet_hole, right=true, center=true, left=true, magnets) {
+module connector_negative(square_basis, priority, lock, magnets, magnet_hole, height=6, right=true, center=true, left=true, magnets) {
     if (left) {
-        translate([0,square_basis*(.5),0]) center_connector_negative(0, priority, lock, magnets, magnet_hole);
+        translate([0,square_basis*(.5),0]) center_connector_negative(0, priority, lock, magnets, magnet_hole, height=height);
     }
     if (center) {
-        translate([0,0,0]) joint_connector_negative(0);
+        translate([0,0,0]) joint_connector_negative(0, height=height);
     }
     if(right) {
-        translate([0,square_basis*(-.5),0]) center_connector_negative(0, priority, lock, magnets, magnet_hole);
+        translate([0,square_basis*(-.5),0]) center_connector_negative(0, priority, lock, magnets, magnet_hole, height=height);
     }
 }
 
 
-module center_connector_wall_positive(edge, priority, lock, magnets, magnet_hole) {
+module center_connector_wall_positive(edge, priority, lock, magnets, magnet_hole, height=6, topless=TOPLESS) {
     if (edge == 1) {
-        if (priority == "lock" && (lock == "openlock" || lock == "triplex")) {
+        if (priority == "lock" && (lock == "openlock_topless" || (lock == "openlock" && topless == "true"))) {
+            openlock_topless_positive(height=height);
+        } else if (priority == "lock" && (lock == "openlock" || lock == "triplex")) {
             openlock_wall_positive();
-        } else if (priority == "lock" && lock == "openlock_topless") {
-            openlock_topless_positive();
-        } else if (PRIORITY == "lock" && lock == "infinitylock") {
+        } else if (priority == "lock" && lock == "infinitylock") {
             infinitylock_positive();
-        } else if (PRIORITY == "lock" && lock == "dragonlock") {
+        } else if (priority == "lock" && lock == "dragonlock") {
             dragonlock_positive();
-        } else if (PRIORITY == "lock" && lock == "dragonlocktriplex") {
+        } else if (priority == "lock" && lock == "dragonlocktriplex") {
             dragonlock_positive();
         } else {
             if (magnets == "magnetic") {
-                magnetic_positive(magnet_hole);
+                magnetic_positive(magnet_hole, height=height);
             } else if (magnets == "flex_magnetic") {
-                flex_magnetic_positive(magnet_hole);
+                flex_magnetic_positive(magnet_hole, height=height);
             }
         }
     } else {
-        if (priority == "lock" && lock == "triplex") {
+        if (priority == "lock" && (lock == "openlock_topless" || (lock == "openlock" && topless == "true")) && magnets == "none") {
+            openlock_topless_positive(height=height);
+        } else if (priority == "lock" && lock == "triplex") {
             openlock_wall_positive();
         } else if (priority == "lock" && lock == "openlock" && magnets == "none") {
             openlock_positive();
-        } else if (priority == "lock" && lock == "openlock_topless" && magnets == "none") {
-            openlock_topless_positive();
         } else if (priority == "lock" && lock == "infinitylock" && magnets == "none") {
             infinitylock_positive();
         } else if (priority == "lock" && lock == "dragonlocktriplex" && magnets == "none") {
             dragonlock_positive();
         } else {
             if (magnets == "magnetic") {
-                magnetic_positive(magnet_hole);
+                magnetic_positive(magnet_hole, height=height);
             } else if (magnets == "flex_magnetic") {
-                flex_magnetic_positive(magnet_hole);
+                flex_magnetic_positive(magnet_hole, height=height);
             }
         }
     }
 }
 
-module center_connector_wall_negative(edge, priority, lock, magnets, magnet_hole) {
+module center_connector_wall_negative(edge, priority, lock, magnets, magnet_hole, height=6, topless=TOPLESS) {
     if (edge == 1) {
-        if (priority == "lock" && (lock == "openlock" || lock == "triplex")) {
-            openlock_wall_negative();
-        } else if (priority == "lock" && lock == "openlock_topless") {
+        if (priority == "lock" && (lock == "openlock_topless" || (lock == "openlock" && topless == "true"))) {
             echo("Not Implemented");
+        } else if (priority == "lock" && (lock == "openlock" || lock == "triplex")) {
+            openlock_wall_negative();
         } else if (priority == "lock" && lock == "infinitylock") {
             echo("Not Implemented");
         } else if (priority == "lock" && lock == "dragonlock") {
@@ -197,12 +197,12 @@ module center_connector_wall_negative(edge, priority, lock, magnets, magnet_hole
             }
         }
     } else {
-        if (priority == "lock" && lock == "triplex") {
+        if (priority == "lock" && (lock == "openlock_topless" || (lock == "openlock" && topless == "true")) && magnets == "none") {
+            echo("Not Implemented");
+        } else if (priority == "lock" && lock == "triplex") {
             openlock_wall_negative();
         } else if (priority == "lock" && lock == "openlock" && magnets == "none") {
             openlock_wall_negative();
-        } else if (priority == "lock" && lock == "openlock_topless" && magnets == "none") {
-            echo("Not Implemented");
         } else if (priority == "lock" && lock == "infinitylock" && magnets == "none") {
             echo("Not Implemented");
         } else if (priority == "lock" && lock == "dragonlocktriplex" && magnets == "none") {
@@ -217,50 +217,50 @@ module center_connector_wall_negative(edge, priority, lock, magnets, magnet_hole
     }
 }
 
-module joint_connector_wall_positive(edge) {
-    if(LOCK == "openlock" || LOCK == "triplex") {
+module joint_connector_wall_positive(edge, height=6, lock=LOCK, topless=TOPLESS) {
+    if (lock == "openlock_topless" || (lock == "openlock" && topless == "true")) {
+        echo("Not Implemented");
+    } else if(lock == "openlock" || lock == "triplex") {
         openlock_wall_positive();
-    } else if (LOCK == "openlock_topless") {
+    } else if (lock == "infinitylock") {
         echo("Not Implemented");
-    } else if (LOCK == "infinitylock") {
-        echo("Not Implemented");
-    } else if (LOCK == "dragonlock" || LOCK == "dragonlocktriplex") {
+    } else if (lock == "dragonlock" || lock == "dragonlocktriplex") {
         echo("Not Implemented");
     }
 }
 
-module joint_connector_wall_negative(edge) {
-    if(LOCK == "openlock" || LOCK == "triplex") {
+module joint_connector_wall_negative(edge, height=6, lock=LOCK, topless=TOPLESS) {
+    if (lock == "openlock_topless" || (lock == "openlock" && topless == "true")) {
+        echo("Not Implemented");
+    } else if(lock == "openlock" || lock == "triplex") {
         openlock_wall_negative();
-    } else if (LOCK == "openlock_topless") {
+    } else if (lock == "infinitylock") {
         echo("Not Implemented");
-    } else if (LOCK == "infinitylock") {
-        echo("Not Implemented");
-    } else if (LOCK == "dragonlock" || LOCK == "dragonlocktriplex") {
+    } else if (lock == "dragonlock" || lock == "dragonlocktriplex") {
         echo("Not Implemented");
     }
 }
 
-module connector_wall_positive() {
+module connector_wall_positive(height=6) {
     if (left) {
-        translate([0,square_basis*(.5),0]) center_connector_wall_positive(0, priority, lock, magnets, magnet_hole);
+        translate([0,square_basis*(.5),0]) center_connector_wall_positive(0, priority, lock, magnets, magnet_hole, height=height);
     }
     if (center) {
-        translate([0,square_basis*(-.5),0]) center_connector_wall_positive(0, priority, lock, magnets, magnet_hole);
+        translate([0,square_basis*(-.5),0]) center_connector_wall_positive(0, priority, lock, magnets, magnet_hole, height=height);
     }
     if(right) {
         translate([0,0,0]) joint_connector_wall_positive(0);
     }
 }
 
-module connector_wall_negative() {
+module connector_wall_negative(height=6) {
     if (left) {
-        translate([0,square_basis*(.5),0]) center_connector_wall_negative(0, priority, lock, magnets, magnet_hole);
+        translate([0,square_basis*(.5),0]) center_connector_wall_negative(0, priority, lock, magnets, magnet_hole, height=height);
     }
     if (center) {
-        translate([0,0,0]) joint_connector_wall_negative(0);
+        translate([0,0,0]) joint_connector_wall_negative(0, height=height);
     }
     if(right) {
-        translate([0,square_basis*(-.5),0]) center_connector_wall_negative(0, priority, lock, magnets, magnet_hole);
+        translate([0,square_basis*(-.5),0]) center_connector_wall_negative(0, priority, lock, magnets, magnet_hole, height=height);
     }
 }
