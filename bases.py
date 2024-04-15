@@ -471,9 +471,9 @@ def generate_curved_inverted():
     curved_inverted_generate([(7,6,3)], curved_connections(), "curved,inverted", run_openscad_curved_inverted, "bases#curved+inverted.scad", large=True)
 
 def generate_squares():
-    generate(coords(), connections(), "square", run_openscad, "bases_square.scad")
-    generate([(3,3)], connections(), "square", run_openscad, "bases_square.scad", flip=True, notch="true", notch_x=2, notch_y=2)
-    generate([(4,4)], connections(), "square", run_openscad, "bases_square.scad", flip=True, notch="true", notch_x=2, notch_y=2)
+    generate(coords(), connections(), "square", run_openscad, "bases#square.scad")
+    generate([(3,3)], connections(), "square", run_openscad, "bases#square.scad", flip=True, notch="true", notch_x=2, notch_y=2)
+    generate([(4,4)], connections(), "square", run_openscad, "bases#square.scad", flip=True, notch="true", notch_x=2, notch_y=2)
 
 def generate_square_s2w_wall():
     generate(minimal_coords(ones=False), wall_lock_connections(), "square+s2w,wall", run_openscad, "bases#square+wall.scad", wall_locks="true")
@@ -482,6 +482,9 @@ def generate_square_s2w_wall():
 def generate_square_s2w_corner():
     generate(minimal_coords(ones=False), wall_lock_connections(), "square+s2w,wall", run_openscad, "bases#square+wall.scad", wall_locks="true")
     generate(minimal_coords(ones=False), connections(), "square+s2w,wall", run_openscad, "bases#square+wall.scad")
+
+def generate_angled():
+    generate(coords(True), connections(), "angled", run_openscad, "bases#diagonal.scad")
 
 def generate_hexes():
     hex_generate(hex_coords(), connections(), "hex", run_openscad_hex, "bases#hex.scad")
@@ -504,6 +507,7 @@ def generate_bases(options, args):
     _runme(["square_s2w", "square_s2w.wall"], generate_square_s2w_wall)
     _runme(["square_s2w", "square_s2w.corner"], generate_square_s2w_corner)
     _runme(["hexes"], generate_hexes)
+    _runme(["angled"], generate_angled)
     _runme(["curved", "curved.std"], generate_curved_std)
     _runme(["curved", "curved.large"], generate_curved_large)
     _runme(["curved", "curved.radial"], generate_curved_radial)
@@ -522,6 +526,7 @@ def validate_args(args):
         "square_s2w.wall",
         "square_s2w.corner",
         "hexes",
+        "angled",
         "curved",
         "curved.std",
         "curved.large",
