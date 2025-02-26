@@ -5,8 +5,8 @@ from pprint import pprint
 from optparse import OptionParser
 import sh
 
-def make_folder(basis, style, morphology, connection):
-    path = "/".join([basis, style, morphology, connection])
+def make_folder(style, morphology, connection):
+    path = "/".join([style, morphology, connection])
     sh.mkdir("-p", path)
     return path
 
@@ -504,7 +504,7 @@ def generate_squares():
     generate(coords(), connections(), "square", run_openscad, "bases#square.scad")
     generate([(3,3)], connections(), "square", run_openscad, "bases#square.scad", flip=True, notch="true", notch_x=2, notch_y=2)
     generate([(4,4)], connections(), "square", run_openscad, "bases#square.scad", flip=True, notch="true", notch_x=2, notch_y=2)
-    generate([(6,4),(6,6),(8,8)], connections(), "square,grid", run_openscad, "bases#square.scad", center="true")
+    generate([(6,4),(6,6),(8,8)], connections(), "square,grid", run_openscad, "bases#square.scad", center="grid")
 
 def generate_square_s2w_wall():
     generate(minimal_coords(ones=False), wall_lock_connections(), "square+s2w,wall", run_openscad, "bases#square+wall.scad", wall_locks="true")
