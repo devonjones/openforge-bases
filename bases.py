@@ -338,7 +338,7 @@ def riser_generate(coords, connections, shape, fxn, scad, **kwargs):
             shapename += ",%s" % riser_names(z)
             if active:
                 print("%s/plain#riser+%s.%s.%s" % (dirname, shapename, size, title))
-                path = make_folder("inch", "plain", "%s+riser" % shape, dirname)
+                path = make_folder("plain", "%s+riser" % shape, dirname)
                 fn = "plain#riser+%s.%s" % (shapename, size)
                 _run(fn, **kwargs)
 
@@ -380,7 +380,7 @@ def generate(coords, connections, shape, fxn, scad, flip=False, **kwargs):
                 shapename += ",wall_locks"
             print("%s/plain#base+%s.%s.%s" % (dirname, shapename, size, set_options(connectors, options)))
             if active:
-                path = make_folder("inch", "plain", shape, dirname)
+                path = make_folder("plain", shape, dirname)
                 fn = "plain#base+%s.%s" % (shapename, size)
                 if len(connectors) > 1:
                     if x == 1 or y == 1 or flip:
@@ -417,7 +417,7 @@ def curved_radial_generate(coords, connections, shape, fxn, scad, full=False, **
                 size = "%sx%s°" % (x,angle)
             print("%s/plain#base+%s.%s.%s" % (dirname, shapename, size, set_options(connectors, options)))
             if active:
-                path = make_folder("inch", "plain", shape, dirname)
+                path = make_folder("plain", shape, dirname)
                 fn = "plain#base+%s.%s" % (shapename, size)
                 _run(fn, connectors, "magnets", **kwargs)
 
@@ -442,7 +442,7 @@ def curved_inverted_generate(coords, connections, shape, fxn, scad, large=False,
             size = "%sx%s+%sr" % (x,x,cut)
             print("%s/plain#base+%s.%s.%s" % (dirname, shapename, size, set_options(connectors, options)))
             if active:
-                path = make_folder("inch", "plain", shape, dirname)
+                path = make_folder("plain", shape, dirname)
                 if large:
                     for l in ["a", "b", "c"]:
                         fn = "plain#base+%s,%s.%s" % (shapename, l, size)
@@ -473,7 +473,7 @@ def hex_generate(sizes, connections, shape, fxn, scad, **kwargs):
                 shapename = shape
             print("%s/plain#base+%s.%sx.%s" % (dirname, shapename, size, set_options(connectors, options)))
             if active:
-                path = make_folder("inch", "plain", shapename, dirname)
+                path = make_folder("plain", shapename, dirname)
                 fn = "plain#base+%s.%sx" % (shapename, size)
                 if len(connectors) > 1:
                     _run(fn, connectors, "magnets", **kwargs)
