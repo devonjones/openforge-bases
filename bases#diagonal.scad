@@ -14,6 +14,9 @@ DIAGONAL_BASIS = "inch"; // [25mm:Dwarven Forge/Hirstarts, inch:OpenLOCK/Dragonl
 // OpenLOCK Topless - openlock, but without a top
 LOCK = "openlock";// [openlock,triplex,infinitylock,dragonlock,none]
 
+// If Openlock, do we want supports?
+SUPPORTS = "true"; // [true, false]
+
 /* [Topless] */
 // remove top of openlock bays
 TOPLESS = "true"; // [true, false]

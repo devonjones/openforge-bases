@@ -41,7 +41,7 @@ module openlock_positive() {
 module openlock_negative(supports=true) {
     difference() {
         openlock_chamber(1);
-        if(supports) {
+        if(supports == "true") {
             openlock_supports();
         }
     }

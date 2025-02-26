@@ -67,7 +67,7 @@ module connector_negative_square(x,y,square_basis,edge_width,north=true,south=tr
             translate([0,square_basis*(i+1)-square_basis/2,0]) center_connector_negative(y, priority, lock, magnets, magnet_hole, height=height);
         }
         if(east) {
-            translate([square_basis*x,square_basis*(i+1)-square_basis/2,0]) rotate([0,0,180]) center_connector_negative(y, priority, lock, magnets, magnet_hole, , height=height);
+            translate([square_basis*x,square_basis*(i+1)-square_basis/2,0]) rotate([0,0,180]) center_connector_negative(y, priority, lock, magnets, magnet_hole, height=height);
         }
     }
     if (y > 1) {
@@ -155,13 +155,15 @@ module plain_square_negative(x,y,square_basis,edge_width) {
                 }
             }
         }
-        if (CENTER == "true") {
+        if (CENTER == "grid") {
             for ( i = [2 : 2 : y-1] ) {
                 translate([0,(i-.125)*square_basis,-2]) cube([square_basis*x,square_basis/4,HEIGHT+4]);
             }
-            for ( i = [2 : 2 : y-1] ) {
+            for ( i = [2 : 2 : x-1] ) {
                 translate([(i-.125)*square_basis,0,-2]) cube([square_basis/4,square_basis*y,HEIGHT+4]);
             }
+        } else if (CENTER == "cube") {
+            translate([0,(-.125)*square_basis,-2]) cube([square_basis*x,square_basis*y,HEIGHT+4]);
         }
     }
 }

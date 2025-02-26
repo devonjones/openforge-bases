@@ -76,7 +76,7 @@ module connector_negative_diagonal(x,y,diagonal_basis,edge_width,north=true,sout
     if (y > 1) {
         for ( i = [1 : y-1] ) {
             if(west) {
-                translate([0,diagonal_basis*i,0]) joint_connector_negative(y, , height=HEIGHT);
+                translate([0,diagonal_basis*i,0]) joint_connector_negative(y, PRIORITY, LOCK, MAGNETS, MAGNET_HOLE, height=HEIGHT);
             }
             /*
             if(east) {

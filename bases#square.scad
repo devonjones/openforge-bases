@@ -14,9 +14,12 @@ SQUARE_BASIS = "inch"; // [25mm:Dwarven Forge/Hirstarts, inch:OpenLOCK/Dragonloc
 // OpenLOCK Topless - openlock, but without a top
 LOCK = "openlock";// [openlock,triplex,infinitylock,dragonlock,none]
 
+// If Openlock, do we want supports?
+SUPPORTS = "true"; // [true, false]
+
 /* [Topless] */
 // remove top of openlock bays
-TOPLESS = "true"; // [true, false]
+TOPLESS = "false"; // [true, false]
 
  /* [Magnets] */
 // Use magnets or not.
@@ -38,7 +41,7 @@ NOTCH = "false"; // [true,false]
 NOTCH_X = 2; // [1,2,3]
 NOTCH_Y = 2; // [1,2,3]
 
-CENTER = "false"; // [true, false]
+CENTER = "none"; // [grid, cube, false]
 
 HEIGHT = 6; // 6 is default
 

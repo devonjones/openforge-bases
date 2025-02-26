@@ -53,7 +53,7 @@ module center_connector_negative(edge, priority, lock, magnets, magnet_hole, hei
         if (priority == "lock" && (lock == "openlock_topless" || (lock == "openlock" && topless == "true"))) {
             openlock_topless_negative(height=height);
         } else if (priority == "lock" && (lock == "openlock" || lock == "triplex")) {
-            openlock_negative();
+            openlock_negative(SUPPORTS);
         } else if (priority == "lock" && lock == "infinitylock") {
             infinitylock_negative();
         } else if (priority == "lock" && lock == "dragonlock") {
@@ -71,9 +71,9 @@ module center_connector_negative(edge, priority, lock, magnets, magnet_hole, hei
         if (priority == "lock" && (lock == "openlock_topless" || (lock == "openlock" && topless == "true")) && magnets == "none") {
             openlock_topless_negative(height=height);
         } else if (priority == "lock" && lock == "triplex") {
-            openlock_negative();
+            openlock_negative(SUPPORTS);
         } else if (priority == "lock" && lock == "openlock" && magnets == "none") {
-            openlock_negative();
+            openlock_negative(SUPPORTS);
         } else if (priority == "lock" && lock == "infinitylock" && magnets == "none") {
             infinitylock_negative();
         } else if (priority == "lock" && lock == "dragonlocktriplex" && magnets == "none") {
@@ -104,7 +104,7 @@ module joint_connector_negative(edge, height=6, lock=LOCK, topless=TOPLESS) {
     if (lock == "openlock_topless" || (lock == "openlock" && topless == "true")) {
         openlock_topless_negative(height=height);
     } else if(lock == "openlock" || lock == "triplex") {
-        openlock_negative();
+        openlock_negative(SUPPORTS);
     } else if (lock == "infinitylock") {
         infinitylock_negative();
     } else if (lock == "dragonlock" || lock == "dragonlocktriplex") {
