@@ -1,10 +1,14 @@
 /* [Base Tile Size] */
-x = 2; //[1,2,3,4,5,6,7,8]
-y = 2; //[1,2,3,4,5,6,7,8]
+// How many squares on the X axis
+x = 4; //[2,3,4,5,6,7,8]
+// How many squares on the Y axis
+y = 4; //[2,3,4,5,6,7,8]
+// How tall is the tile in mm on the Z axis
+HEIGHT = 6; // 6 is default
 
 /* [diagonal Basis] */
 // What is the size in mm of a diagonal?
-DIAGONAL_BASIS = "inch"; // [25mm:Dwarven Forge/Hirstarts, inch:OpenLOCK/Dragonlock/Dungeonworks, wyloch:Wyloch]
+DIAGONAL_BASIS = "inch"; // [25mm:25mm - Dwarven Forge/Hirstarts, inch:inch (25.4) - OpenLOCK/Dragonlock/Dungeonworks, wyloch:1 1/4 inch (31.75) - Wyloch, drc:1 1/2 inch (38.1) - Dragon's Rest]
 
 /* [Lock] */
 // Dragonlock - connector between diagonals, pips on either side for stacking
@@ -12,14 +16,12 @@ DIAGONAL_BASIS = "inch"; // [25mm:Dwarven Forge/Hirstarts, inch:OpenLOCK/Dragonl
 // OpenLOCK - connector between diagonals
 // OpenLOCK Triplex - connector between diagonals and in the middle of diagonals
 // OpenLOCK Topless - openlock, but without a top
+// Select the type of clip lock
 LOCK = "openlock";// [openlock,triplex,infinitylock,dragonlock,none]
-
-// If Openlock, do we want supports?
-SUPPORTS = "true"; // [true, false]
-
-/* [Topless] */
-// remove top of openlock bays
+// If OpenLock remove top of openlock bays
 TOPLESS = "true"; // [true, false]
+// If OpenLock, do we want supports?
+SUPPORTS = "true"; // [true, false]
 
  /* [Magnets] */
 // Use magnets or not.
@@ -27,23 +29,14 @@ MAGNETS = "flex_magnetic"; // [magnetic,flex_magnetic,none]
 // Size of hole for magnet.  6 works well for 5mm buckyball style magnets.
 MAGNET_HOLE = 6;
 
-/* [Electronics] */
-// Should this have enough space for electronics.
-ELECTRONICS = "false";
-
 /* [Priority] */
 // Do you want lock or magnets to win when the two conflict
 PRIORITY = "lock"; // [lock,magnets]
 
-/* [Notch Options] */
-// Removes a diagonal from the tile of notch_x by notch_y
-NOTCH = "false"; // [true,false]
-NOTCH_X = 2; // [1,2,3]
-NOTCH_Y = 2; // [1,2,3]
+/* [Center Options] */
+// Keep center clear, fill it in, or do a grid every 2x
+CENTER = "none"; // [grid, cube, false]
 
-CENTER = "false"; // [true, false]
-
-HEIGHT = 6; // 6 is default
 
 include <impl_diagonal.scad>
 
@@ -66,11 +59,14 @@ module base_diagonal(x,y,diagonal_basis) {
 
 function keyLookup (data, key) = search(key, data, num_returns_per_match=1)[0];
 
+NOTCH = "false";
+ELECTRONICS = "false";
 
 basis = [
     ["25mm", 25],
     ["inch", 25.4],
-    ["wyloch", 31.75]
+    ["wyloch", 31.75],
+    ["drc", 38.1]
 ];
 diagonal_basis_number = basis[keyLookup(basis, [DIAGONAL_BASIS])][1];
 wall_width = 10.2*diagonal_basis_number/25;

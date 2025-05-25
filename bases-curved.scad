@@ -1,10 +1,14 @@
 /* [Base Tile Size] */
-x = 2; //[1,2,3,4,5,6,7,8]
-y = 2; //[1,2,3,4,5,6,7,8]
+// How many squares on the X axis
+x = 2; //[2,3,4,5,6,7,8]
+// How many squares on the Y axis
+y = 2; //[2,3,4,5,6,7,8]
+// How tall is the tile in mm on the Z axis
+HEIGHT = 6; // 6 is default
 
 /* [Square Basis] */
 // What is the size in mm of a square?
-SQUARE_BASIS = "inch"; // [25mm:Dwarven Forge/Hirstarts, inch:OpenLOCK/Dragonlock/Dungeonworks, wyloch:Wyloch, drc:Dragon's Rest]
+SQUARE_BASIS = "inch"; // [25mm:25mm - Dwarven Forge/Hirstarts, inch:inch (25.4) - OpenLOCK/Dragonlock/Dungeonworks, wyloch:1 1/4 inch (31.75) - Wyloch, drc:1 1/2 inch (38.1) - Dragon's Rest]
 
 /* [Lock] */
 // Dragonlock - connector between squares, pips on either side for stacking
@@ -12,14 +16,12 @@ SQUARE_BASIS = "inch"; // [25mm:Dwarven Forge/Hirstarts, inch:OpenLOCK/Dragonloc
 // OpenLOCK - connector between squares
 // OpenLOCK Triplex - connector between squares and in the middle of squares
 // OpenLOCK Topless - openlock, but without a top
+// Select the type of clip lock
 LOCK = "openlock";// [openlock,triplex,infinitylock,dragonlock,none]
-
-// If Openlock, do we want supports?
-SUPPORTS = "true"; // [true, false]
-
-/* [Topless] */
-// remove top of openlock bays
+// If OpenLock remove top of openlock bays
 TOPLESS = "true"; // [true, false]
+// If OpenLock, do we want supports?
+SUPPORTS = "true"; // [true, false]
 
 /* [Magnets] */
 // Use magnets or not.
@@ -32,8 +34,7 @@ MAGNET_HOLE = 6;
 PRIORITY = "lock"; // [lock,magnets]
 
 /* [Curved Options] */
-// Options for curved, will be ignored if the tile type is not curved
-// curvedlarge - 6x6 and 8x8 are made of 3 tiles, a, b & c
+// curvedlarge - 6x6 and 8x8 are made of 3 tiles, a, b & c.  Will be ignored if sizes aren't 6x6 or 8x8
 CURVED_LARGE = "b"; // [a,b,c]
 
 /* [Notch Options] */
@@ -42,9 +43,9 @@ NOTCH = "false"; // [true,false]
 NOTCH_X = 2; // [1,2,3]
 NOTCH_Y = 2; // [1,2,3]
 
-CENTER = "false"; // [true, false]
-
-HEIGHT = 6; // 6 is default
+/* [Center Options] */
+// Keep center clear, fill it in, or do a grid every 2x
+CENTER = "false"; // [grid, cube, false]
 
 include <impl_curved.scad>
 

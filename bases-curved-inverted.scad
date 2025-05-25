@@ -1,11 +1,16 @@
 /* [Base Tile Size] */
+// How many squares on the X and Y axis (tile is always a square with a circle removed)
 x = 3; //[1,2,3,4,5,6,7,8]
+// What is the radius of the inner diameter (must be smaller than x)
 cut = 2; //[1,2,3,4,5,6,7,8]
+// How many locks in the inner diameter
 id_radial_connectors = 3; //[0,1,3,7]
+// How tall is the tile in mm on the Z axis
+HEIGHT = 6; // 6 is default
 
 /* [Square Basis] */
 // What is the size in mm of a square?
-SQUARE_BASIS = "inch"; // [25mm:Dwarven Forge/Hirstarts, inch:OpenLOCK/Dragonlock/Dungeonworks, wyloch:Wyloch, drc:Dragon's Rest]
+SQUARE_BASIS = "inch"; // [25mm:25mm - Dwarven Forge/Hirstarts, inch:inch (25.4) - OpenLOCK/Dragonlock/Dungeonworks, wyloch:1 1/4 inch (31.75) - Wyloch, drc:1 1/2 inch (38.1) - Dragon's Rest]
 
 /* [Lock] */
 // Dragonlock - connector between squares, pips on either side for stacking
@@ -13,14 +18,12 @@ SQUARE_BASIS = "inch"; // [25mm:Dwarven Forge/Hirstarts, inch:OpenLOCK/Dragonloc
 // OpenLOCK - connector between squares
 // OpenLOCK Triplex - connector between squares and in the middle of squares
 // OpenLOCK Topless - openlock, but without a top
+// Select the type of clip lock
 LOCK = "openlock";// [openlock,triplex,infinitylock,dragonlock,none]
-
-// If Openlock, do we want supports?
-SUPPORTS = "true"; // [true, false]
-
-/* [Topless] */
-// remove top of openlock bays
+// If OpenLock remove top of openlock bays
 TOPLESS = "true"; // [true, false]
+// If OpenLock, do we want supports?
+SUPPORTS = "true"; // [true, false]
 
 /* [Magnets] */
 // Use magnets or not.
@@ -32,14 +35,9 @@ MAGNET_HOLE = 6;
 // Do you want lock or magnets to win when the two conflict
 PRIORITY = "lock"; // [lock,magnets]
 
-/* [Curved Options] */
-// Options for curved, will be ignored if the tile type is not curved
-// curvedlarge - 6x6 and 8x8 are made of 3 tiles, a, b & c
-CURVED_LARGE = "a"; // [a,b,c]
-
-CENTER = "false"; // [true, false]
-
-HEIGHT = 6; // 6 is default
+/* [Center Options] */
+// Keep center clear, fill it in, or do a grid every 2x
+CENTER = "none"; // [grid, cube, false]
 
 include <impl_curved_inverted.scad>
 
@@ -59,6 +57,8 @@ module base_curved_inverted(x,cut,square_basis) {
 }
 
 function keyLookup (data, key) = search(key, data, num_returns_per_match=1)[0];
+
+CURVED_LARGE = "a";
 
 basis = [
     ["25mm", 25],
@@ -81,6 +81,4 @@ if (LOCK == "dragonlock" && !valid_dragonlock_basis) {
     color("Grey") base_curved_inverted(x,cut,square_basis_number);
 }
 
-/* [Notch Options] */
-// Removes a square from the tile of notch_x by notch_y
-NOTCH = "false"; // [true,false] DO NOT CHANGE
+NOTCH = "false";

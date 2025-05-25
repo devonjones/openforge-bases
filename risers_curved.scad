@@ -1,10 +1,25 @@
-x = 2;
-y = 2;
-z = 4;
-LOCK = "openlock";// [openlock,triplex,infinitylock,dragonlock,dragonlocktriplex,none]
-CURVED_CONCAVE = "false"; // [true,false]
-CURVED_LARGE = "b"; // [a,b,c]
-CURVED_SQUARE = "false"; // [true,false]
+/* [Base Tile Size] */
+// How many squares on the X axis
+x = 2; //[2,3,4,5,6,7,8]
+// How many squares on the Y axis
+y = 2; //[2,3,4,5,6,7,8]
+// How tall on the Z axis in half square increments
+z = 4; //[1,2,3,4,6,7,8,9]
+
+/* [Square Basis] */
+// What is the size in mm of a square?
+SQUARE_BASIS = "inch"; // [25mm:25mm - Dwarven Forge/Hirstarts, inch:inch (25.4) - OpenLOCK/Dragonlock/Dungeonworks, wyloch:1 1/4 inch (31.75) - Wyloch, drc:1 1/2 inch (38.1) - Dragon's Rest]
+
+/* [Lock] */
+// Dragonlock - connector between squares, pips on either side for stacking
+// InfinityLock - connector between squares and in the middle of squares
+// OpenLOCK - connector between squares
+// OpenLOCK Triplex - connector between squares and in the middle of squares
+// OpenLOCK Topless - openlock, but without a top
+// Select the type of clip lock
+LOCK = "openlock";// [openlock,triplex,infinitylock,dragonlock,none]
+// If OpenLock, do we want supports?
+SUPPORTS = "true"; // [true, false]
 
 include <impl_curved.scad>
 
@@ -59,18 +74,23 @@ module base_curved(x,y,square_basis) {
     }
 }
 
-SQUARE_BASIS = "inch";
 MAGNETS = "none";
 MAGNET_HOLE = 0;
-TOPLESS = "false";
 PRIORITY = "lock";
 NOTCH = "false";
+TOPLESS = "false";
+HEIGHT = 6;
+CURVED_CONCAVE = "false";
+CURVED_LARGE = "b";
+CURVED_SQUARE = "false";
+
 
 function keyLookup (data, key) = search(key, data, num_returns_per_match=1)[0];
 basis = [
     ["25mm", 25],
     ["inch", 25.4],
-    ["wyloch", 31.75]
+    ["wyloch", 31.75],
+    ["drc", 38.1],
 ];
 square_basis_number = basis[keyLookup(basis, [SQUARE_BASIS])][1];
 wall_width = 10.2*square_basis_number/25;

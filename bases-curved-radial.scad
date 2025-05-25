@@ -1,13 +1,20 @@
 /* [Base Tile Size] */
+// What is the radius of the outer diameter
 x = 4; //[1,2,3,4,5,6,7,8]
+// What is the radius of the inner diameter (must be smaller than x)
 cut = 2; //[1,2,3,4,5,6,7,8]
+// What amount of angle does the base cover
 angle = 90; //[90,45,22.5,11.25]
-id_radial_connectors = 3; //[0,1,3]
+// How many locks in the outer diameter
 od_radial_connectors = 3; //[0,1,3]
+// How many locks in the inner diameter
+id_radial_connectors = 3; //[0,1,3]
+// How tall is the tile in mm on the Z axis
+HEIGHT = 6; // 6 is default
 
 /* [Square Basis] */
 // What is the size in mm of a square?
-SQUARE_BASIS = "inch"; // [25mm:Dwarven Forge/Hirstarts, inch:OpenLOCK/Dragonlock/Dungeonworks, wyloch:Wyloch, drc:Dragon's Rest]
+SQUARE_BASIS = "inch"; // [25mm:25mm - Dwarven Forge/Hirstarts, inch:inch - OpenLOCK/Dragonlock/Dungeonworks, wyloch:1 1/4 inch - Wyloch]
 
 /* [Lock] */
 // Dragonlock - connector between squares, pips on either side for stacking
@@ -15,14 +22,12 @@ SQUARE_BASIS = "inch"; // [25mm:Dwarven Forge/Hirstarts, inch:OpenLOCK/Dragonloc
 // OpenLOCK - connector between squares
 // OpenLOCK Triplex - connector between squares and in the middle of squares
 // OpenLOCK Topless - openlock, but without a top
+// Select the type of clip lock
 LOCK = "openlock";// [openlock,triplex,infinitylock,dragonlock,none]
-
-// If Openlock, do we want supports?
-SUPPORTS = "true"; // [true, false]
-
-/* [Topless] */
-// remove top of openlock bays
+// If OpenLock remove top of openlock bays
 TOPLESS = "true"; // [true, false]
+// If OpenLock, do we want supports?
+SUPPORTS = "true"; // [true, false]
 
 /* [Magnets] */
 // Use magnets or not.
@@ -33,12 +38,6 @@ MAGNET_HOLE = 5;
 /* [Priority] */
 // Do you want lock or magnets to win when the two conflict
 PRIORITY = "magnets"; // [lock,magnets]
-
-/* [Notch Options] */
-// Removes a square from the tile of notch_x by notch_y
-NOTCH = "false"; // [true,false] DO NOT CHANGE
-
-HEIGHT = 6; // 6 is default
 
 include <impl_curved_radial.scad>
 
@@ -58,6 +57,8 @@ module base_curved(x,cut,angle,square_basis) {
 }
 
 function keyLookup (data, key) = search(key, data, num_returns_per_match=1)[0];
+
+NOTCH = "false";
 
 basis = [
     ["25mm", 25],

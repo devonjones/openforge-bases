@@ -1,10 +1,14 @@
 /* [Base Tile Size] */
+// How many squares on the X axis
 x = 2; //[2,3,4,5,6,7,8]
+// How many squares on the Y axis
 y = 2; //[2,3,4,5,6,7,8]
+// How tall is the tile in mm on the Z axis
+HEIGHT = 6; // 6 is default
 
 /* [Square Basis] */
 // What is the size in mm of a square?
-SQUARE_BASIS = "inch"; // [25mm:Dwarven Forge/Hirstarts, inch:OpenLOCK/Dragonlock/Dungeonworks, wyloch:Wyloch]
+SQUARE_BASIS = "inch"; // [25mm:25mm - Dwarven Forge/Hirstarts, inch:inch (25.4) - OpenLOCK/Dragonlock/Dungeonworks, wyloch:1 1/4 inch (31.75) - Wyloch, drc:1 1/2 inch (38.1) - Dragon's Rest]
 
 /* [Lock] */
 // Dragonlock - connector between squares, pips on either side for stacking
@@ -12,16 +16,15 @@ SQUARE_BASIS = "inch"; // [25mm:Dwarven Forge/Hirstarts, inch:OpenLOCK/Dragonloc
 // OpenLOCK - connector between squares
 // OpenLOCK Triplex - connector between squares and in the middle of squares
 // OpenLOCK Topless - openlock, but without a top
+// Select the type of clip lock
 LOCK = "openlock";// [openlock,triplex,infinitylock,dragonlock,none]
-
+// If OpenLock remove top of openlock bays
+TOPLESS = "true"; // [true, false]
 // If Openlock, do we want supports?
 SUPPORTS = "true"; // [true, false]
-
+// Only use clips on the wall facing side
 WALL_LOCKS = "false"; // [true, false]
 
-/* [Topless] */
-// remove top of openlock bays
-TOPLESS = "true"; // [true, false]
 
  /* [Magnets] */
 // Use magnets or not.
@@ -29,21 +32,12 @@ MAGNETS = "flex_magnetic"; // [magnetic,flex_magnetic,none]
 // Size of hole for magnet.  6 works well for 5mm buckyball style magnets.
 MAGNET_HOLE = 6;
 
-/* [Electronics] */
-// Should this have enough space for electronics.
-ELECTRONICS = "false";
-
 /* [Priority] */
 // Do you want lock or magnets to win when the two conflict
 PRIORITY = "lock"; // [lock,magnets]
 
-/* [Notch Options] */
-// Removes a square from the tile of notch_x by notch_y
-NOTCH = "false"; // [true,false]
 
-CENTER = "false"; // [true, false]
 
-HEIGHT = 6; // 6 is default
 
 include <impl_square.scad>
 
@@ -71,11 +65,15 @@ module base_square(x,y,square_basis) {
 
 function keyLookup (data, key) = search(key, data, num_returns_per_match=1)[0];
 
+NOTCH = "false";
+ELECTRONICS = "false";
+CENTER = "false";
 
 basis = [
     ["25mm", 25],
     ["inch", 25.4],
-    ["wyloch", 31.75]
+    ["wyloch", 31.75],
+    ["drc", 38.1]
 ];
 square_basis_number = basis[keyLookup(basis, [SQUARE_BASIS])][1];
 wall_width = 10.2*square_basis_number/25;
