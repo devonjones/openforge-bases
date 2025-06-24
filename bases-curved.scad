@@ -34,8 +34,8 @@ MAGNET_HOLE = 6;
 PRIORITY = "lock"; // [lock,magnets]
 
 /* [Curved Options] */
-// curvedlarge - 6x6 and 8x8 are made of 3 tiles, a, b & c.  Will be ignored if sizes aren't 6x6 or 8x8
-CURVED_LARGE = "b"; // [a,b,c]
+// curvedlarge - 6x6 and 8x8 are made of 3 tiles, a, b & c.  In some special cases, there is ac (a+c) and ax/cx for 8x which go on either side of ac  Will be ignored if sizes aren't 6x6 or 8x8
+CURVED_LARGE = "a"; // [a,b,c,ac,ax,cx]
 
 /* [Notch Options] */
 // Removes a square from the tile of notch_x by notch_y

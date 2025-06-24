@@ -24,8 +24,10 @@ module connector_positive_curved_large_6(square_basis, edge_width) {
         rotate([0,0,-90]) mirror([1,0,0]) {
             connector_positive_large_6_a(square_basis,edge_width);
         }
+    } else if(CURVED_LARGE == "ac") {
+        connector_positive_large_6_ac(square_basis,edge_width);
     } else {
-        echo("Curved 6x6 only supports a, b & c");
+        echo("Curved 6x6 only supports a, b, c & ac");
     }
 }
 
@@ -38,8 +40,14 @@ module connector_positive_curved_large_8(square_basis, edge_width) {
         rotate([0,0,-90]) mirror([1,0,0]) {
             connector_positive_large_8_a(square_basis,edge_width);
         }
+    } else if(CURVED_LARGE == "ac") {
+        connector_positive_large_8_ac(square_basis,edge_width);
+    } else if(CURVED_LARGE == "ax") {
+        connector_positive_large_8_ax(square_basis,edge_width);
+    } else if(CURVED_LARGE == "cx") {
+        mirror([1,0,0]) connector_positive_large_8_ax(square_basis,edge_width);
     } else {
-        echo("Curved 8x8 only supports a, b & c");
+        echo("Curved 8x8 only supports a, b, c, ac, ax & cx");
     }
 }
 
@@ -48,9 +56,23 @@ module connector_positive_large_6_a(square_basis,edge_width) {
     translate([square_basis*2,square_basis*3,0]) connector_positive_square_notch(1,2,square_basis,edge_width,north=false);
 }
 
+module connector_positive_large_6_ac(square_basis,edge_width) {
+    translate([square_basis*-2,square_basis*5,0]) connector_positive_square_notch(4,1,square_basis,edge_width,east=false,north=false);
+    translate([square_basis*2,square_basis*3,0]) connector_positive_square_notch(1,2,square_basis,edge_width,north=false);
+    mirror([1,0,0]) translate([square_basis*2,square_basis*3,0]) connector_positive_square_notch(1,2,square_basis,edge_width,north=false);
+}
+
 module connector_positive_large_8_a(square_basis,edge_width) {
     translate([0,square_basis*6,0]) connector_positive_square_notch(4,2,square_basis,edge_width,east=false,north=false);
     translate([0,square_basis*6,0]) translate([square_basis*4,square_basis*(1)-square_basis/2,0]) rotate([0,0,180]) center_connector_positive(y,x, PRIORITY, LOCK, MAGNETS, MAGNET_HOLE);
+}
+
+module connector_positive_large_8_ac(square_basis,edge_width) {
+    translate([square_basis*-2,square_basis*6,0]) connector_positive_square_notch(4,2,square_basis,edge_width,north=false);
+}
+
+module connector_positive_large_8_ax(square_basis,edge_width) {
+    translate([square_basis*2,square_basis*6,0]) connector_positive_square_notch(2,2,square_basis,edge_width,east=false,north=false);
 }
 
 /*
@@ -82,8 +104,10 @@ module connector_negative_curved_large_6(square_basis, edge_width) {
         rotate([0,0,-90]) mirror([1,0,0]) {
             connector_negative_large_6_a(square_basis,edge_width);
         }
+    } else if(CURVED_LARGE == "ac") {
+        connector_negative_large_6_ac(square_basis,edge_width);
     } else {
-        echo("Curved 6x6 only supports a, b & c");
+        echo("Curved 6x6 only supports a, b, c & ac");
     }
 }
 
@@ -104,8 +128,14 @@ module connector_negative_curved_large_8(square_basis, edge_width) {
         rotate([0,0,-90]) mirror([1,0,0]) {
             connector_negative_large_8_a(square_basis,edge_width);
         }
+    } else if(CURVED_LARGE == "ac") {
+        connector_negative_large_8_ac(square_basis,edge_width);
+    } else if(CURVED_LARGE == "ax") {
+        connector_negative_large_8_ax(square_basis,edge_width);
+    } else if(CURVED_LARGE == "cx") {
+        mirror([1,0,0]) connector_negative_large_8_ax(square_basis,edge_width);
     } else {
-        echo("Curved 8x8 only supports a, b & c");
+        echo("Curved 8x8 only supports a, b, c, ac, ax & cx");
     }
 }
 
@@ -114,9 +144,23 @@ module connector_negative_large_6_a(square_basis,edge_width) {
     translate([square_basis*2,square_basis*3,0]) connector_negative_square_notch(1,2,square_basis,edge_width,north=false);
 }
 
+module connector_negative_large_6_ac(square_basis,edge_width) {
+    translate([square_basis*-2,square_basis*5,0]) connector_negative_square_notch(4,1,square_basis,edge_width,east=false,north=false, west=false);
+    translate([square_basis*2,square_basis*3,0]) connector_negative_square_notch(1,2,square_basis,edge_width,north=false);
+    mirror([1,0,0]) translate([square_basis*2,square_basis*3,0]) connector_negative_square_notch(1,2,square_basis,edge_width,north=false);
+}
+
 module connector_negative_large_8_a(square_basis,edge_width) {
     translate([0,square_basis*6,0]) connector_negative_square_notch(4,2,square_basis,edge_width,east=false,north=false);
     translate([0,square_basis*6,0]) translate([square_basis*4,square_basis*(1)-square_basis/2,0]) rotate([0,0,180]) center_connector_negative(y,x, PRIORITY, LOCK, MAGNETS, MAGNET_HOLE);
+}
+
+module connector_negative_large_8_ac(square_basis,edge_width) {
+    translate([square_basis*-2,square_basis*6,0]) connector_negative_square_notch(4,2,square_basis,edge_width,north=false);
+}
+
+module connector_negative_large_8_ax(square_basis,edge_width) {
+    translate([square_basis*2,square_basis*6,0]) connector_negative_square_notch(2,2,square_basis,edge_width,east=false,north=false);
 }
 
 /*
@@ -161,8 +205,15 @@ module plain_curved_large_6(square_basis, edge_width) {
         rotate([0,0,-90]) mirror([1,0,0]) {
             plain_curved_large_6_a(square_basis,edge_width);
         }
+    } else if(CURVED_LARGE == "ac") {
+        union() {
+            plain_curved_large_6_a(square_basis,edge_width);
+            mirror([1,0,0]) {
+                plain_curved_large_6_a(square_basis,edge_width);
+            }
+        }
     } else {
-        echo("Curved 6x6 only supports a, b & c");
+        echo("Curved 6x6 only supports a, b, c & ac");
     }
 }
 
@@ -175,8 +226,14 @@ module plain_curved_large_8(square_basis, edge_width) {
         rotate([0,0,-90]) mirror([1,0,0]) {
             plain_curved_large_8_a(square_basis,edge_width);
         }
+    } else if(CURVED_LARGE == "ac") {
+        plain_curved_large_8_ac(square_basis,edge_width);
+    } else if(CURVED_LARGE == "ax") {
+        plain_curved_large_8_ax(square_basis,edge_width);
+    } else if(CURVED_LARGE == "cx") {
+        mirror([1,0,0]) plain_curved_large_8_ax(square_basis,edge_width);
     } else {
-        echo("Curved 8x8 only supports a, b & c");
+        echo("Curved 8x8 only supports a, b, c, ac, ax & cx");
     }
 }
 
@@ -258,3 +315,46 @@ module plain_curved_large_b(x,y,square_basis,edge_width) {
         }
     }
 }
+
+module plain_curved_large_8_ac(square_basis,edge_width) {
+    x = 8;
+    y = 8;
+    
+    difference() {
+        intersection() {
+            hull() {
+                translate([square_basis*-2,6*square_basis,0]) plain_square_positive(4,2,square_basis);
+            }
+            hull() {
+                translate([0,0,.4]) scale([x,y,1]) cylinder(5.6,square_basis,square_basis,$fn=200);
+                translate([0,0,0]) scale([x-(.25/square_basis),y-(.25/square_basis),1]) cylinder(.4,square_basis,square_basis,$fn=200);
+            }
+        }
+        intersection() {
+            translate([square_basis*-2,6*square_basis,0]) plain_square_negative(4,2,square_basis,edge_width);
+            translate([0,0,-1]) scale([((x*square_basis)-edge_width)/square_basis,((y*square_basis)-edge_width)/square_basis,1]) cylinder(8,square_basis,square_basis,$fn=200);
+        }
+    }
+}
+
+module plain_curved_large_8_ax(square_basis,edge_width) {
+    x = 8;
+    y = 8;
+    
+    difference() {
+        intersection() {
+            hull() {
+                translate([square_basis*2,6*square_basis,0]) plain_square_positive(2,2,square_basis);
+            }
+            hull() {
+                translate([0,0,.4]) scale([x,y,1]) cylinder(5.6,square_basis,square_basis,$fn=200);
+                translate([0,0,0]) scale([x-(.25/square_basis),y-(.25/square_basis),1]) cylinder(.4,square_basis,square_basis,$fn=200);
+            }
+        }
+        intersection() {
+            translate([square_basis*2,6*square_basis,0]) plain_square_negative(2,2,square_basis,edge_width);
+            translate([0,0,-1]) scale([((x*square_basis)-edge_width)/square_basis,((y*square_basis)-edge_width)/square_basis,1]) cylinder(8,square_basis,square_basis,$fn=200);
+        }
+    }
+}
+

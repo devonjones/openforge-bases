@@ -347,7 +347,7 @@ def set_options(connectors, options):
     for connector in connectors:
         c = []
         c.append(connector)
-        if connector in options:
+        if options and connector in options:
             c.append("+")
             c.append(options[connector])
         parts.append("".join(c))
@@ -481,44 +481,47 @@ def hex_generate(sizes, connections, shape, fxn, scad, **kwargs):
                     _run(fn, connectors, "magnets", **kwargs)
 
 def generate_curved_std():
-    generate(coords(True), curved_connections(), "curved", run_openscad, "bases#curved.scad")
-    generate([(4,4)], curved_connections(), "curved", run_openscad, "bases#curved.scad", notch="true", notch_x=2, notch_y=2)
+    generate(coords(True), curved_connections(), "curved", run_openscad, "bases-curved.scad")
+    generate([(4,4)], curved_connections(), "curved", run_openscad, "bases-curved.scad", notch="true", notch_x=2, notch_y=2)
 
 def generate_curved_large():
-    generate([(6,6)], curved_connections(), "curved", run_openscad_large_curved, "bases#curved.scad", flip=True, large="a")
-    generate([(8,8)], curved_connections(), "curved", run_openscad_large_curved, "bases#curved.scad", large="a")
-    generate([(6,6), (8,8)], curved_connections(), "curved", run_openscad_large_curved, "bases#curved.scad", large="b")
-    generate([(6,6)], curved_connections(), "curved", run_openscad_large_curved, "bases#curved.scad", flip=True, large="c")
-    generate([(8,8)], curved_connections(), "curved", run_openscad_large_curved, "bases#curved.scad", large="c")
+    generate([(6,6)], curved_connections(), "curved", run_openscad_large_curved, "bases-curved.scad", flip=True, large="a")
+    generate([(8,8)], curved_connections(), "curved", run_openscad_large_curved, "bases-curved.scad", large="a")
+    generate([(6,6), (8,8)], curved_connections(), "curved", run_openscad_large_curved, "bases-curved.scad", large="b")
+    generate([(6,6)], curved_connections(), "curved", run_openscad_large_curved, "bases-curved.scad", flip=True, large="c")
+    generate([(8,8)], curved_connections(), "curved", run_openscad_large_curved, "bases-curved.scad", large="c")
 
 def generate_curved_radial():
-    curved_radial_generate([(2,0,90,0,3), (4,0,90,0,3)], curved_connections(), "curved", run_openscad_curved_radial, "bases#curved,radial.scad", full=True)
-    curved_radial_generate([(4,2,90,3,3), (4,2,45,1,1), (4,2,22.5,0,0)], curved_connections(), "curved,radial", run_openscad_curved_radial, "bases#curved,radial.scad")
-    curved_radial_generate([(6,4,45,3,3), (6,4,22.5,1,1), (6,4,11.25,0,0)], curved_connections(), "curved,radial", run_openscad_curved_radial, "bases#curved,radial.scad")
+    curved_radial_generate([(2,0,90,0,3), (4,0,90,0,3)], curved_connections(), "curved", run_openscad_curved_radial, "bases-curved-radial.scad", full=True)
+    curved_radial_generate([(4,2,90,3,3), (4,2,45,1,1), (4,2,22.5,0,0)], curved_connections(), "curved,radial", run_openscad_curved_radial, "bases-curved-radial.scad")
+    curved_radial_generate([(6,4,45,3,3), (6,4,22.5,1,1), (6,4,11.25,0,0)], curved_connections(), "curved,radial", run_openscad_curved_radial, "bases-curved-radial.scad")
 
 def generate_curved_inverted():
-    curved_inverted_generate([(3,2,3), (5,4,3)], curved_connections(), "curved,inverted", run_openscad_curved_inverted, "bases#curved+inverted.scad")
-    curved_inverted_generate([(7,6,3)], curved_connections(), "curved,inverted", run_openscad_curved_inverted, "bases#curved+inverted.scad", large=True)
+    curved_inverted_generate([(3,2,3), (5,4,3)], curved_connections(), "curved,inverted", run_openscad_curved_inverted, "bases-curved-inverted.scad")
+    curved_inverted_generate([(7,6,3)], curved_connections(), "curved,inverted", run_openscad_curved_inverted, "bases-curved-inverted.scad", large=True)
 
 def generate_squares():
-    generate(coords(), connections(), "square", run_openscad, "bases#square.scad")
-    generate([(3,3)], connections(), "square", run_openscad, "bases#square.scad", flip=True, notch="true", notch_x=2, notch_y=2)
-    generate([(4,4)], connections(), "square", run_openscad, "bases#square.scad", flip=True, notch="true", notch_x=2, notch_y=2)
-    generate([(6,4),(6,6),(8,8)], connections(), "square,grid", run_openscad, "bases#square.scad", center="grid")
+    generate(coords(), connections(), "square", run_openscad, "bases-square.scad")
+    generate([(3,3)], connections(), "square", run_openscad, "bases-square.scad", flip=True, notch="true", notch_x=2, notch_y=2)
+    generate([(4,4)], connections(), "square", run_openscad, "bases-square.scad", flip=True, notch="true", notch_x=2, notch_y=2)
+    generate([(6,4),(6,6),(8,8)], connections(), "square,grid", run_openscad, "bases-square.scad", center="grid")
 
 def generate_square_s2w_wall():
-    generate(minimal_coords(ones=False), wall_lock_connections(), "square+s2w,wall", run_openscad, "bases#square+wall.scad", wall_locks="true")
-    generate(minimal_coords(ones=False), connections(), "square+s2w,wall", run_openscad, "bases#square+wall.scad")
+    generate(minimal_coords(ones=False), wall_lock_connections(), "square+s2w+wall", run_openscad, "bases-square-wall.scad", wall_locks="true")
+    generate(minimal_coords(ones=False), connections(), "square+s2w+wall", run_openscad, "bases-square-wall.scad")
 
 def generate_square_s2w_corner():
-    generate(minimal_coords(ones=False), wall_lock_connections(), "square+s2w,corner", run_openscad, "bases#square+corner.scad", wall_locks="true")
-    generate(minimal_coords(ones=False), connections(), "square+s2w,corner", run_openscad, "bases#square+corner.scad")
+    generate(minimal_coords(ones=False), wall_lock_connections(), "square+s2w+corner", run_openscad, "bases-square-corner.scad", wall_locks="true")
+    generate(minimal_coords(ones=False), connections(), "square+s2w+corner", run_openscad, "bases-square-corner.scad")
+
+def generate_square_s2w_internal_corner():
+    generate([(2,2)], connections(), "square+s2w+internal_corner", run_openscad, "bases-square-internal_corner.scad")
 
 def generate_angled():
-    generate(coords(True), connections(), "angled", run_openscad, "bases#diagonal.scad")
+    generate(coords(True), connections(), "angled", run_openscad, "bases-diagonal.scad")
 
 def generate_hexes():
-    hex_generate(hex_coords(), connections(), "hex", run_openscad_hex, "bases#hex.scad")
+    hex_generate(hex_coords(), connections(), "hex", run_openscad_hex, "bases-hex.scad")
 
 def generate_square_risers():
     riser_generate(riser_coords(), riser_connections(), "square", run_openscad_risers, "risers_square.scad")
@@ -534,17 +537,18 @@ def generate_bases(options, args):
             if name in args:
                 return fxn()
 
-    _runme(["squares"], generate_squares)
-    _runme(["square_s2w", "square_s2w.wall"], generate_square_s2w_wall)
-    _runme(["square_s2w", "square_s2w.corner"], generate_square_s2w_corner)
-    _runme(["hexes"], generate_hexes)
-    _runme(["angled"], generate_angled)
-    _runme(["curved", "curved.std"], generate_curved_std)
-    _runme(["curved", "curved.large"], generate_curved_large)
-    _runme(["curved", "curved.radial"], generate_curved_radial)
-    _runme(["curved", "curved.inverted"], generate_curved_inverted)
-    _runme(["risers", "risers.square"], generate_square_risers)
-    _runme(["risers", "risers.curved"], generate_curved_risers)
+    #_runme(["squares"], generate_squares)
+    #_runme(["square_s2w", "square_s2w.wall"], generate_square_s2w_wall)
+    #_runme(["square_s2w", "square_s2w.corner"], generate_square_s2w_corner)
+    _runme(["square_s2w", "square_s2w.internal_corner"], generate_square_s2w_internal_corner)
+    #_runme(["hexes"], generate_hexes)
+    #_runme(["angled"], generate_angled)
+    #_runme(["curved", "curved.std"], generate_curved_std)
+    #_runme(["curved", "curved.large"], generate_curved_large)
+    #_runme(["curved", "curved.radial"], generate_curved_radial)
+    #_runme(["curved", "curved.inverted"], generate_curved_inverted)
+    #_runme(["risers", "risers.square"], generate_square_risers)
+    #_runme(["risers", "risers.curved"], generate_curved_risers)
 
 def option_parser(usage):
 	parser = OptionParser(usage=usage)
