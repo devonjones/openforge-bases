@@ -106,6 +106,31 @@ def run_openscad_hex(filename, scad, size, magnet_priority, connector_setting=No
     print(args)
     sh.openscad(*args)
 
+def run_openscad_hex_corner(filename, scad, angle, magnet_priority, connector_setting=None, magnet_setting=None, **kwargs):
+    args = []
+    args.append("-o")
+    args.append(filename)
+    args.append("-D")
+    args.append("ANGLE=%s" % angle)
+    args.append("-D")
+    args.append('SQUARE_BASIS="inch"')
+
+    _connector_setting(args, connector_setting)
+    _magnet_setting(args, magnet_setting, magnet_priority)
+
+    if 'supports' in kwargs:
+        args.append("-D")
+        args.append('SUPPORTS="%s"' % kwargs['supports'])
+
+    if 'topless' in kwargs:
+        args.append("-D")
+        args.append('TOPLESS="%s"' % kwargs['topless'])
+
+    args.append(scad)
+    print(filename)
+    print(args)
+    sh.openscad(*args)
+
 def run_openscad_curved_inverted(filename, scad, x, cut, id, magnet_priority, connector_setting=None, magnet_setting=None, **kwargs):
     args = []
     args.append("-o")
@@ -214,6 +239,9 @@ def run_openscad(filename, scad, x, y, magnet_priority, connector_setting=None, 
 
 def hex_coords():
     return [2,3,4]
+
+def hex_corner_coords():
+    return [60,120,240,300]
 
 def riser_coords(limited=False):
     xsizes = [1,2,3,4]
@@ -480,6 +508,33 @@ def hex_generate(sizes, connections, shape, fxn, scad, **kwargs):
                 else:
                     _run(fn, connectors, "magnets", **kwargs)
 
+def hex_corner_generate(angles, connections, shape, fxn, scad, **kwargs):
+    def _run(fn, connectors, magnet_priority, **kwargs):
+        kwargs['angle'] = angle
+        kwargs['connector_setting'] = connector_setting
+        kwargs['magnet_setting'] = magnet_setting
+        kwargs['magnet_priority'] = magnet_priority
+        filename = fn + ".%s" % set_options(connectors, options)
+        filename += ".stl"
+        filename = "/".join([path, filename])
+        fxn(filename, scad, **kwargs)
+    
+    for connection in connections:
+        dirname, active, connectors, connector_setting, magnet_setting, options, kv = connection
+        kwargs.update(kv)
+        for angle in angles:
+            if shape == 'hex_corner':
+                shapename = "hex+corner"
+            else:
+                shapename = shape
+            print("%s/plain#base+%s.%s°.%s" % (dirname, shapename, angle, set_options(connectors, options)))
+            if active:
+                path = make_folder("plain", shapename, dirname)
+                fn = "plain#base+%s.%s°" % (shapename, angle)
+                _run(fn, connectors, "lock", **kwargs)
+                if len(connectors) > 1:
+                    _run(fn, connectors[::-1], "magnets", **kwargs)
+
 def generate_curved_std():
     generate(coords(True), curved_connections(), "curved", run_openscad, "bases-curved.scad")
     generate([(4,4)], curved_connections(), "curved", run_openscad, "bases-curved.scad", notch="true", notch_x=2, notch_y=2)
@@ -521,7 +576,8 @@ def generate_angled():
     generate(coords(True), connections(), "angled", run_openscad, "bases-diagonal.scad")
 
 def generate_hexes():
-    hex_generate(hex_coords(), connections(), "hex", run_openscad_hex, "bases-hex.scad")
+    #hex_generate(hex_coords(), connections(), "hex", run_openscad_hex, "bases-hex.scad")
+    hex_corner_generate(hex_corner_coords(), connections(), "hex+corner", run_openscad_hex_corner, "bases-hex-corner.scad")
 
 def generate_square_risers():
     riser_generate(riser_coords(), riser_connections(), "square", run_openscad_risers, "risers_square.scad")
@@ -540,8 +596,8 @@ def generate_bases(options, args):
     #_runme(["squares"], generate_squares)
     #_runme(["square_s2w", "square_s2w.wall"], generate_square_s2w_wall)
     #_runme(["square_s2w", "square_s2w.corner"], generate_square_s2w_corner)
-    _runme(["square_s2w", "square_s2w.internal_corner"], generate_square_s2w_internal_corner)
-    #_runme(["hexes"], generate_hexes)
+    #_runme(["square_s2w", "square_s2w.internal_corner"], generate_square_s2w_internal_corner)
+    _runme(["hexes"], generate_hexes)
     #_runme(["angled"], generate_angled)
     #_runme(["curved", "curved.std"], generate_curved_std)
     #_runme(["curved", "curved.large"], generate_curved_large)
