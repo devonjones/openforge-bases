@@ -10,17 +10,27 @@ module connector_positive_curved_radial(x,y,square_basis,edge_width) {
 /*
  * Connector Negative
  */
-module connector_negative_curved_radial(x, cut, angle, square_basis, edge_width, id_connectors, od_connectors) {
+module connector_negative_curved_radial(x, cut, angle, square_basis, edge_width, id_connectors, od_connectors, id_magnets, od_magnets) {
     translate([0,cut*square_basis,0]) connector_negative_square_notch(x-cut,x-cut,square_basis,edge_width,east=false,north=false,south=false);
     rotate([0,0,90-angle]) translate([cut*square_basis,0,0]) connector_negative_square_notch(x-cut,x-cut,square_basis,edge_width,west=false,east=false,north=false);
     if (id_connectors > 0) {
         for ( i = [1 : id_connectors] ) {
             rotate([0,0,90-angle/(id_connectors+1)*i]) translate([square_basis*cut,0,0])  connector_negative(square_basis, PRIORITY, LOCK, MAGNETS, MAGNET_HOLE, right=false, left=false);
         }
+        if (id_magnets) {
+            for ( i = [1 : id_connectors + 1] ) {
+                rotate([0,0,90-angle/(od_connectors+1)*i+angle/(od_connectors+1)/2]) translate([square_basis*cut,0,0]) rotate([0,0,0]) center_connector_negative(edge_width, PRIORITY, LOCK, MAGNETS, MAGNET_HOLE, height=HEIGHT, topless=TOPLESS);
+            }
+        }
     }
     if (od_connectors > 0) {
         for ( i = [1 : od_connectors] ) {
             rotate([0,0,90-angle/(od_connectors+1)*i]) translate([square_basis*x,0,0]) rotate([0,0,180]) connector_negative(square_basis, PRIORITY, LOCK, MAGNETS, MAGNET_HOLE, right=false, left=false);
+        }
+        if (od_magnets) {
+            for ( i = [1 : od_connectors + 1] ) {
+                rotate([0,0,90-angle/(od_connectors+1)*i+angle/(od_connectors+1)/2]) translate([square_basis*x,0,0]) rotate([0,0,180]) center_connector_negative(edge_width, PRIORITY, LOCK, MAGNETS, MAGNET_HOLE, height=HEIGHT, topless=TOPLESS);
+            }
         }
     }
 }

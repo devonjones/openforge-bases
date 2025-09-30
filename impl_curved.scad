@@ -16,7 +16,9 @@ module connector_positive_curved(x,y,square_basis,edge_width) {
 }
 
 module connector_positive_curved_large_6(square_basis, edge_width) {
-    if(CURVED_LARGE == "a") {
+    if (CURVED_LARGE == "complete") {
+        connector_positive_square_notch(x,y,square_basis,edge_width,east=false,north=false);
+    } else if(CURVED_LARGE == "a") {
         connector_positive_large_6_a(square_basis,edge_width);
     } else if(CURVED_LARGE == "b") {
         translate([square_basis*6/2, square_basis*6/2,0]) connector_positive_square_notch(6/2-1,6/2-1,square_basis,edge_width,east=false,north=false);
@@ -78,25 +80,37 @@ module connector_positive_large_8_ax(square_basis,edge_width) {
 /*
  * Connector Negative
  */
-module connector_negative_curved(x,y,square_basis,edge_width) {
+module connector_negative_curved(x,y,square_basis,edge_width,od_connectors=0,curved_magnets=true) {
     if(x == 6 && y == 6) {
-        connector_negative_curved_large_6(square_basis,edge_width);
+        connector_negative_curved_large_6(square_basis,edge_width,od_connectors,curved_magnets);
     } else if (x == 8 && y == 8) {
         connector_negative_curved_large_8(square_basis,edge_width);
-    } else if (x > 4 || y > 4) {
+    } else if (x > 6 || y > 6) {
         echo("Curved does not support ", x, "x", y);
     } else {
-        connector_negative_square_notch(x,y,square_basis,edge_width,east=false,north=false);
-        if (x > 1 && y > 1 && x == y) {
-            rotate([0,0,45]) translate([square_basis*x,0,0]) rotate([0,0,180]) connector_negative(square_basis, PRIORITY, LOCK, MAGNETS, MAGNET_HOLE, right=false, left=false);
-            rotate([0,0,45/2]) translate([square_basis*x,0,0]) rotate([0,0,180]) connector_negative(square_basis, PRIORITY, LOCK, MAGNETS, MAGNET_HOLE, right=false, left=false);
-            rotate([0,0,45*1.5]) translate([square_basis*x,0,0]) rotate([0,0,180]) connector_negative(square_basis, PRIORITY, LOCK, MAGNETS, MAGNET_HOLE, right=false, left=false);
+        connector_negative_curved_large_impl(x,y,square_basis,edge_width,od_connectors,curved_magnets);
+    }
+}
+
+module connector_negative_curved_large_impl(x,y,square_basis,edge_width,od_connectors=0,curved_magnets=true) {
+    connector_negative_square_notch(x,y,square_basis,edge_width,east=false,north=false);
+    if (od_connectors > 0) {
+        angle = 90;
+        for ( i = [1 : od_connectors] ) {
+            rotate([0,0,90-angle/(od_connectors+1)*i]) translate([square_basis*x,0,0]) rotate([0,0,180]) connector_negative(square_basis, PRIORITY, LOCK, MAGNETS, MAGNET_HOLE, right=false, left=false);
+        }
+        if (curved_magnets) {
+            for ( i = [1 : od_connectors + 1] ) {
+                rotate([0,0,90-angle/(od_connectors+1)*i+angle/(od_connectors+1)/2]) translate([square_basis*x,0,0]) rotate([0,0,180]) center_connector_negative(edge_width, PRIORITY, LOCK, MAGNETS, MAGNET_HOLE, height=HEIGHT, topless=TOPLESS);
+            }
         }
     }
 }
 
-module connector_negative_curved_large_6(square_basis, edge_width) {
-    if(CURVED_LARGE == "a") {
+module connector_negative_curved_large_6(square_basis, edge_width, od_connectors, curved_magnets) {
+    if (CURVED_LARGE == "complete") {
+        connector_negative_curved_large_impl(x,y,square_basis,edge_width,od_connectors,curved_magnets);
+    } else if(CURVED_LARGE == "a") {
         connector_negative_large_6_a(square_basis,edge_width);
     } else if(CURVED_LARGE == "b") {
         translate([square_basis*6/2, square_basis*6/2,0]) connector_negative_square_notch(6/2-1,6/2-1,square_basis,edge_width,east=false,north=false);
@@ -197,7 +211,9 @@ module plain_curved(x,y,square_basis,edge_width) {
 
 
 module plain_curved_large_6(square_basis, edge_width) {
-    if(CURVED_LARGE == "a") {
+    if (CURVED_LARGE == "complete") {
+        plain_curved(x,y,square_basis,edge_width);
+    } else if(CURVED_LARGE == "a") {
         plain_curved_large_6_a(square_basis,edge_width);
     } else if(CURVED_LARGE == "b") {
         plain_curved_large_b(x,y,square_basis,edge_width);

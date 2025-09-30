@@ -6,7 +6,7 @@ cut = 2; //[1,2,3,4,5,6,7,8]
 // What amount of angle does the base cover
 angle = 90; //[90,45,22.5,11.25]
 // How many locks in the outer diameter
-od_radial_connectors = 3; //[0,1,3]
+od_radial_connectors = 3; //[0,1,3,7]
 // How many locks in the inner diameter
 id_radial_connectors = 3; //[0,1,3]
 // How tall is the tile in mm on the Z axis
@@ -33,7 +33,9 @@ SUPPORTS = "true"; // [true, false]
 // Use magnets or not.
 MAGNETS = "flex_magnetic"; // [magnetic, flex_magnetic, none]
 // Size of hole for magnet.  6 works well for 5mm buckyball style magnets.  0 to eliminate.
-MAGNET_HOLE = 5;
+MAGNET_HOLE = 6;
+ID_MAGNETS = "false"; // [true, false]
+OD_MAGNETS = "true"; // [true, false]
 
 /* [Priority] */
 // Do you want lock or magnets to win when the two conflict
@@ -52,7 +54,7 @@ module base_curved(x,cut,angle,square_basis) {
         union() {
             plain_base_curved_radial(x, cut, angle, square_basis, edge_width);
         }
-        connector_negative_curved_radial(x, cut, angle, square_basis, edge_width, id_radial_connectors, od_radial_connectors);
+        connector_negative_curved_radial(x, cut, angle, square_basis, edge_width, id_radial_connectors, od_radial_connectors, id_magnets=ID_MAGNETS=="true", od_magnets=OD_MAGNETS=="true");
     }
 }
 

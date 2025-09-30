@@ -162,7 +162,7 @@ def run_openscad_curved_inverted(filename, scad, x, cut, id, magnet_priority, co
     print(args)
     sh.openscad(*args)
 
-def run_openscad_curved_radial(filename, scad, x, cut, angle, id, od, magnet_priority, connector_setting=None, magnet_setting=None, **kwargs):
+def run_openscad_curved_radial(filename, scad, x, cut, angle, id, od, magnet_priority, id_magnets=False, od_magnets=False, connector_setting=None, magnet_setting=None, **kwargs):
     args = []
     args.append("-o")
     args.append(filename)
@@ -175,7 +175,11 @@ def run_openscad_curved_radial(filename, scad, x, cut, angle, id, od, magnet_pri
     args.append("-D")
     args.append("id_radial_connectors=%s" % id)
     args.append("-D")
+    args.append("ID_MAGNETS=\"%s\"" % str(id_magnets).lower())
+    args.append("-D")
     args.append("od_radial_connectors=%s" % od)
+    args.append("-D")
+    args.append("OD_MAGNETS=\"%s\"" % str(od_magnets).lower())
     args.append("-D")
     args.append('SQUARE_BASIS="inch"')
 
@@ -225,6 +229,9 @@ def run_openscad(filename, scad, x, y, magnet_priority, connector_setting=None, 
     if 'notch_y' in kwargs:
         args.append("-D")
         args.append('NOTCH_Y=%s' % kwargs['notch_y'])
+    if 'curved_magnets' in kwargs:
+        args.append("-D")
+        args.append('CURVED_MAGNETS="%s"' % kwargs['curved_magnets'])
     if 'wall_locks' in kwargs:
         args.append("-D")
         args.append('WALL_LOCKS="%s"' % kwargs['wall_locks'])
@@ -290,7 +297,7 @@ def connections():
         #("openlock+topless", True, ["openlock"], "openlock", None, {"openlock": "topless"}, {"topless": "true"}),
         ("openlock,magnetic+flex", True, ["openlock", "magnetic"], "openlock", "flex_magnetic", {"magnetic": "flex"}, {"topless": "false"}),
         ("openlock+unsupported,magnetic+flex", True, ["openlock", "magnetic"], "openlock", "flex_magnetic", {"openlock": "unsupported", "magnetic": "flex"}, {"supports": "false", "topless": "false"}),
-        ("openlock,magnetic+topless,flex", True, ["openlock", "magnetic"], "openlock_topless", "flex_magnetic", {"openlock": "topless", "magnetic": "flex"}, {"topless": "true"}),
+        ("openlock+topless,magnetic+flex", True, ["openlock", "magnetic"], "openlock_topless", "flex_magnetic", {"openlock": "topless", "magnetic": "flex"}, {"topless": "true"}),
         #("infinitylock", True, ["infinitylock"], "infinitylock", None, None, {}),
         #("infinitylock,magnetic+flex", True, ["infinitylock", "magnetic"], "infinitylock", "flex_magnetic", {"magnetic": "flex"}, {}),
         ("dragonlock", True, ["dragonlock"], "dragonlock", None, None, {}),
@@ -306,7 +313,7 @@ def curved_connections():
         #("openlock+topless", True, ["openlock"], "openlock", None, {"openlock": "topless"}, {"topless": "true"}),
         ("openlock,magnetic+flex", True, ["openlock", "magnetic"], "openlock", "flex_magnetic", {"magnetic": "flex"}, {"topless": "false"}),
         ("openlock+unsupported,magnetic+flex", True, ["openlock", "magnetic"], "openlock", "flex_magnetic", {"openlock": "unsupported", "magnetic": "flex"}, {"supports": "false", "topless": "false"}),
-        ("openlock,magnetic+topless,flex", True, ["openlock", "magnetic"], "openlock_topless", "flex_magnetic", {"openlock": "topless", "magnetic": "flex"}, {"topless": "true"}),
+        ("openlock+topless,magnetic+flex", True, ["openlock", "magnetic"], "openlock_topless", "flex_magnetic", {"openlock": "topless", "magnetic": "flex"}, {"topless": "true"}),
         #("infinitylock", True, ["infinitylock"], "infinitylock", None, None, {}),
         #("infinitylock,magnetic+flex", True, ["infinitylock", "magnetic"], "infinitylock", "flex_magnetic", {"magnetic": "flex"}, {}),
         ("dragonlock", True, ["dragonlock"], "dragonlock", None, None, {}),
@@ -318,7 +325,7 @@ def wall_lock_connections():
         # dirname, active, connectors, connector_setting, magnet_setting, options, kv 
         ("openlock,magnetic+flex", True, ["openlock", "magnetic"], "openlock", "flex_magnetic", {"magnetic": "flex"}, {"topless": "false"}),
         ("openlock+unsupported,magnetic+flex", True, ["openlock", "magnetic"], "openlock", "flex_magnetic", {"openlock": "unsupported", "magnetic": "flex"}, {"supports": "false", "topless": "false"}),
-        ("openlock,magnetic+topless,flex", True, ["openlock", "magnetic"], "openlock_topless", "flex_magnetic", {"openlock": "topless", "magnetic": "flex"}, {"topless": "true"}),
+        ("openlock+topless,magnetic+flex", True, ["openlock", "magnetic"], "openlock_topless", "flex_magnetic", {"openlock": "topless", "magnetic": "flex"}, {"topless": "true"}),
         #("infinitylock,magnetic+flex", True, ["infinitylock", "magnetic"], "infinitylock", "flex_magnetic", {"magnetic": "flex"}, {}),
         ("dragonlock,magnetic+flex", True, ["dragonlock", "magnetic"], "dragonlock", "flex_magnetic", {"magnetic": "flex"}, {}),
     ]
@@ -362,7 +369,7 @@ def riser_generate(coords, connections, shape, fxn, scad, **kwargs):
             if 'large' in kwargs:
                 size += ",%s" % kwargs['large']
             if 'notch' in kwargs:
-                shapename += ",notch"
+                size += "+notch"
             shapename += ",%s" % riser_names(z)
             if active:
                 print("%s/plain#riser+%s.%s.%s" % (dirname, shapename, size, title))
@@ -401,9 +408,9 @@ def generate(coords, connections, shape, fxn, scad, flip=False, **kwargs):
             shapename = shape
             size = "%sx%s" % (x,y)
             if 'large' in kwargs:
-                size += ",%s" % kwargs['large']
+                size += "+%s" % kwargs['large']
             if 'notch' in kwargs:
-                shapename += ",notch"
+                size += "+notch"
             if 'wall_locks' in kwargs:
                 shapename += ",wall_locks"
             print("%s/plain#base+%s.%s.%s" % (dirname, shapename, size, set_options(connectors, options)))
@@ -419,13 +426,15 @@ def generate(coords, connections, shape, fxn, scad, flip=False, **kwargs):
                 else:
                     _run(fn, connectors, "magnets", **kwargs)
 
-def curved_radial_generate(coords, connections, shape, fxn, scad, full=False, **kwargs):
+def curved_radial_generate(coords, connections, shape, fxn, scad, **kwargs):
     def _run(fn, connectors, magnet_priority, **kwargs):
         kwargs['x'] = x
         kwargs['cut'] = cut
         kwargs['angle'] = angle
         kwargs['id'] = id
+        kwargs['id_magnets'] = id_magnets
         kwargs['od'] = od
+        kwargs['od_magnets'] = od_magnets
         kwargs['connector_setting'] = connector_setting
         kwargs['magnet_setting'] = magnet_setting
         kwargs['magnet_priority'] = magnet_priority
@@ -437,12 +446,9 @@ def curved_radial_generate(coords, connections, shape, fxn, scad, full=False, **
     for connection in connections:
         dirname, active, connectors, connector_setting, magnet_setting, options, kv = connection
         kwargs.update(kv)
-        for x, cut, angle, id, od in coords:
+        for x, cut, angle, id, od, id_magnets, od_magnets in coords:
             shapename = shape
-            if full:
-                size = "%sx%s" % (x,x)
-            else:
-                size = "%sx%s°" % (x,angle)
+            size = "%sr%s°" % (x,angle)
             print("%s/plain#base+%s.%s.%s" % (dirname, shapename, size, set_options(connectors, options)))
             if active:
                 path = make_folder("plain", shape, dirname)
@@ -536,8 +542,11 @@ def hex_corner_generate(angles, connections, shape, fxn, scad, **kwargs):
                     _run(fn, connectors[::-1], "magnets", **kwargs)
 
 def generate_curved_std():
-    generate(coords(True), curved_connections(), "curved", run_openscad, "bases-curved.scad")
-    generate([(4,4)], curved_connections(), "curved", run_openscad, "bases-curved.scad", notch="true", notch_x=2, notch_y=2)
+    generate([(2,2)], curved_connections(), "curved", run_openscad, "bases-curved.scad")
+    generate([(4,4)], curved_connections(), "curved", run_openscad, "bases-curved.scad", curved_magnets="true")
+    generate([(4,4)], curved_connections(), "curved", run_openscad, "bases-curved.scad", curved_magnets="true", notch="true", notch_x=2, notch_y=2)
+    generate([(6,6)], curved_connections(), "curved", run_openscad, "bases-curved.scad", curved_magnets="true")
+    generate([(6,6)], curved_connections(), "curved", run_openscad, "bases-curved.scad", curved_magnets="true", notch="true", notch_x=3, notch_y=3)
 
 def generate_curved_large():
     generate([(6,6)], curved_connections(), "curved", run_openscad_large_curved, "bases-curved.scad", flip=True, large="a")
@@ -547,9 +556,9 @@ def generate_curved_large():
     generate([(8,8)], curved_connections(), "curved", run_openscad_large_curved, "bases-curved.scad", large="c")
 
 def generate_curved_radial():
-    curved_radial_generate([(2,0,90,0,3), (4,0,90,0,3)], curved_connections(), "curved", run_openscad_curved_radial, "bases-curved-radial.scad", full=True)
-    curved_radial_generate([(4,2,90,3,3), (4,2,45,1,1), (4,2,22.5,0,0)], curved_connections(), "curved,radial", run_openscad_curved_radial, "bases-curved-radial.scad")
-    curved_radial_generate([(6,4,45,3,3), (6,4,22.5,1,1), (6,4,11.25,0,0)], curved_connections(), "curved,radial", run_openscad_curved_radial, "bases-curved-radial.scad")
+    curved_radial_generate([(2,0,90,0,3,False,False), (4,0,90,0,3,False,True)], curved_connections(), "curved+radial", run_openscad_curved_radial, "bases-curved-radial.scad")
+    curved_radial_generate([(4,2,90,3,3,False,True), (4,2,45,1,1,False,True), (4,2,22.5,0,0,False,True)], curved_connections(), "curved+radial", run_openscad_curved_radial, "bases-curved-radial.scad")
+    curved_radial_generate([(6,4,90,3,3,True,True), (6,4,45,3,3,True,True), (6,4,22.5,1,1,True,True), (6,4,11.25,0,0,True,True)], curved_connections(), "curved+radial", run_openscad_curved_radial, "bases-curved-radial.scad")
 
 def generate_curved_inverted():
     curved_inverted_generate([(3,2,3), (5,4,3)], curved_connections(), "curved,inverted", run_openscad_curved_inverted, "bases-curved-inverted.scad")
@@ -597,7 +606,7 @@ def generate_bases(options, args):
     #_runme(["square_s2w", "square_s2w.wall"], generate_square_s2w_wall)
     #_runme(["square_s2w", "square_s2w.corner"], generate_square_s2w_corner)
     #_runme(["square_s2w", "square_s2w.internal_corner"], generate_square_s2w_internal_corner)
-    _runme(["hexes"], generate_hexes)
+    #_runme(["hexes"], generate_hexes)
     #_runme(["angled"], generate_angled)
     #_runme(["curved", "curved.std"], generate_curved_std)
     #_runme(["curved", "curved.large"], generate_curved_large)

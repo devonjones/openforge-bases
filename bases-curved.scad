@@ -22,12 +22,15 @@ LOCK = "openlock";// [openlock,triplex,infinitylock,dragonlock,none]
 TOPLESS = "true"; // [true, false]
 // If OpenLock, do we want supports?
 SUPPORTS = "true"; // [true, false]
+// Do you want connectors around the curve
+RADIAL_CONNECTORS = "true"; // [true, false]
 
 /* [Magnets] */
 // Use magnets or not.
 MAGNETS = "flex_magnetic"; // [magnetic, flex_magnetic]
 // Size of hole for magnet.  6 works well for 5mm buckyball style magnets.  0 to eliminate.
 MAGNET_HOLE = 6;
+CURVED_MAGNETS = "false"; // [true, false]
 
 /* [Priority] */
 // Do you want lock or magnets to win when the two conflict
@@ -35,7 +38,7 @@ PRIORITY = "lock"; // [lock,magnets]
 
 /* [Curved Options] */
 // curvedlarge - 6x6 and 8x8 are made of 3 tiles, a, b & c.  In some special cases, there is ac (a+c) and ax/cx for 8x which go on either side of ac  Will be ignored if sizes aren't 6x6 or 8x8
-CURVED_LARGE = "a"; // [a,b,c,ac,ax,cx]
+CURVED_LARGE = "complete"; // [complete,a,b,c,ac,ax,cx]
 
 /* [Notch Options] */
 // Removes a square from the tile of notch_x by notch_y
@@ -56,17 +59,26 @@ module base_curved(x,y,square_basis) {
     tmp_edge_width = MAGNET_HOLE >= 5.55 ? MAGNET_HOLE + 1 : 6.55;
     edge_width = LOCK == "triplex" ? tmp_edge_width : square_basis/2 ;
 
+    odcons = [
+        [1, 0],
+        [2, 3],
+        [3, 3],
+        [4, 3],
+        [6, 7]
+    ];
+
     difference() {
         union() {
             plain_base_curved(x,y,square_basis,edge_width);
             connector_positive_curved(x,y,square_basis,edge_width) ;
         }
-        connector_negative_curved(x,y,square_basis,edge_width) ;
+        
+        od_connectors = RADIAL_CONNECTORS=="true" ? odcons[keyLookup(odcons, [x])][1] : 0;
+        connector_negative_curved(x,y,square_basis,edge_width,od_connectors=od_connectors,curved_magnets=CURVED_MAGNETS=="true") ;
     }
 }
 
 function keyLookup (data, key) = search(key, data, num_returns_per_match=1)[0];
-
 
 basis = [
     ["25mm", 25],
